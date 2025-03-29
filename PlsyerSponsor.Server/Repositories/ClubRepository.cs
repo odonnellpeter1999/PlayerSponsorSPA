@@ -1,0 +1,19 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PlayerSponsor.Server.Data.Context;
+using PlayerSponsor.Server.Models;
+
+namespace PlayerSponsor.Server.Repositories;
+
+public class ClubRepository : Repository<Club>, IClubRepository
+{
+    public ClubRepository(ClubDbContext context) : base(context) { }
+
+    public async Task<Club> GetClubWithTeamsAndPlayersAsync(int clubId)
+    {
+        return await _context.Clubs
+            .Include(c => c.Teams)
+                .ThenInclude(t => t.Players)
+            .FirstOrDefaultAsync(c => c.Id == clubId);
+    }
+}
+

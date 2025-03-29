@@ -10,6 +10,6 @@ public class Club
     public string PaymentDetails { get; set; }
     public List<ClubAdmin> Admins { get; set; } = new();
     public List<Team> Teams { get; set; } = new();
-    public string PlayerKey { get; set; }
+    public string PlayerKey { get; set; } // Used to authenticate player detail links/forms
 }
 

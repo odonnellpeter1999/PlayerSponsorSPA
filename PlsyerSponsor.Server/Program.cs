@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using PlayerSponsor.Server.Data.Context;
+using PlayerSponsor.Server.Repositories;
+using PlayerSponsor.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,11 +10,19 @@ builder.Services.AddDbContext<ClubDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("Default"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
 
+// Add AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Dependencies
+builder.Services.AddScoped<IClubService, ClubService>();
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
 
 var app = builder.Build();
 
