@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PlayerSponsor.Server.Data.Context;
 using PlayerSponsor.Server.Repositories;
@@ -6,9 +7,17 @@ using PlayerSponsor.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MySQL to the container
-builder.Services.AddDbContext<ClubDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("Default"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
+
+// Configure Identity
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Add authentication & authorization
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -36,8 +45,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapIdentityApi<IdentityUser>();
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

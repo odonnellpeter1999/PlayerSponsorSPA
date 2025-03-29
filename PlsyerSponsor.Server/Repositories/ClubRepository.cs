@@ -6,7 +6,7 @@ namespace PlayerSponsor.Server.Repositories;
 
 public class ClubRepository : Repository<Club>, IClubRepository
 {
-    public ClubRepository(ClubDbContext context) : base(context) { }
+    public ClubRepository(ApplicationDbContext context) : base(context) { }
 
     public async Task<Club> GetClubWithTeamsAndPlayersAsync(int clubId)
     {
