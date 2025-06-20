@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PlayerSponsor.Server.Auth;
 using PlayerSponsor.Server.Data.Context;
+using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Repositories;
 using PlayerSponsor.Server.Services;
 
@@ -11,13 +14,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("Default"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
 
-// Configure Identity
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
 // Add authentication & authorization
 builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+
+// Configure Identity
+builder.Services.AddApplicationIdentity();
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("ClubAdminPolicy", policy =>
+        policy.Requirements.Add(new ClubAccessRequirement()));
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -31,7 +36,11 @@ builder.Services.AddSwaggerGen();
 
 // Register Dependencies
 builder.Services.AddScoped<IClubService, ClubService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
+builder.Services.AddScoped<IClubAdminRepository, ClubAdminRepository>();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ClubAdminClaimsPrincipalFactory>();
+builder.Services.AddScoped<IAuthorizationHandler, ClubAccessHandler>();
 
 var app = builder.Build();
 
@@ -45,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<ApplicationUser>();
 
 app.UseHttpsRedirection();
 
