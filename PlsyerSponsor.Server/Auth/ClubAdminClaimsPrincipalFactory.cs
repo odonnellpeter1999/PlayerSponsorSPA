@@ -38,7 +38,6 @@ public class ClubAdminClaimsPrincipalFactory : UserClaimsPrincipalFactory<Applic
             }
 
             return identity;
-
         }
         catch (Exception ex)
         {
