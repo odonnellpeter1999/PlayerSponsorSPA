@@ -1,55 +1,92 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using PlayerSponsor.Server.Common;
 using PlayerSponsor.Server.Controllers.Requests;
 using PlayerSponsor.Server.Controllers.Responses;
+using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Services;
+using PlayerSponsor.Server.Services.ClubService;
+using PlayerSponsor.Server.Services.DTOs;
 
 namespace PlayerSponsor.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ClubController : ControllerBase
+public class ClubController : BaseController
 {
     private readonly IClubService _clubService;
+    private readonly IAccountService _accountService;
+    private readonly IMapper _mapper;
 
-    public ClubController(IClubService clubService)
+    public ClubController(IClubService clubService, IMapper mapper, IAccountService accountService)
     {
         _clubService = clubService;
+        _mapper = mapper;
+        _accountService = accountService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ClubDto>>> GetAllClubs()
+    public async Task<IActionResult> GetAllClubs()
     {
-        var clubs = await _clubService.GetAllClubsAsync();
-        return Ok(clubs);
+        var result = await _clubService.GetAllClubsAsync();
+
+        if (!result.IsSuccess)
+            return NotFound(result.Error);
+
+        return Ok(result.Value);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ClubDto>> GetClubById(int id)
+    [Authorize("ClubAdminPolicy")]
+    public async Task<IActionResult> GetClubById(int id)
     {
-        try
-        {
-            var club = await _clubService.GetClubByIdAsync(id);
-            return Ok(club);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
-    }
+        var result = await _clubService.GetClubByIdAsync(id);
 
-    [HttpPost]
-    public async Task<ActionResult<ClubDto>> CreateClub([FromBody] CreateClubRequest clubDto)
+        if (!result.IsSuccess)
+            return Problem(result.Error!);
+
+        return Ok(result.Value);
+    }
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] CreateClubRequest clubRequest)
     {
-        var createdClub = await _clubService.CreateClubAsync(clubDto);
-        return CreatedAtAction(nameof(GetClubById), new { id = createdClub.Id }, createdClub);
+        // Create the club
+        var newClub = _mapper.Map<Club>(clubRequest);
+
+        var createClubResult = await _clubService.CreateClub(newClub);
+
+        if (!createClubResult.IsSuccess)
+            return Problem(createClubResult.Error!);
+
+        // Create the admin account
+        var newUser = _mapper.Map<NewApplicationUser>(clubRequest);
+
+        newUser.ClubId = createClubResult.Value.Id;
+
+        var registerResult = await _accountService.RegisterUserAsync(newUser);
+
+        if (!registerResult.IsSuccess)
+        {
+            // Rollback club creation if admin account creation fails
+            await _clubService.DeleteClubAsync(createClubResult.Value.Id);
+            return Problem(registerResult.Error!);
+        }
+
+        return Ok(new CreateClubResponse() {ClubId = createClubResult.Value.Id.ToString() });
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateClub(int id, [FromBody] UpdateClubDto clubDto)
+    public async Task<IActionResult> UpdateClub(int id, [FromBody] UpdateClubRequest clubDto)
     {
-        var updated = await _clubService.UpdateClubAsync(id, clubDto);
-        if (!updated)
-            return NotFound(new { message = "Club not found" });
+        var club = _mapper.Map<Club>(clubDto);
+
+        club.Id = id;
+
+        var result = await _clubService.UpdateClubAsync(club);
+
+        if (!result.IsSuccess)
+            return Problem(result.Error!);
 
         return NoContent();
     }
@@ -57,9 +94,9 @@ public class ClubController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClub(int id)
     {
-        var deleted = await _clubService.DeleteClubAsync(id);
-        if (!deleted)
-            return NotFound(new { message = "Club not found" });
+        var result = await _clubService.DeleteClubAsync(id);
+        if (!result.IsSuccess)
+            return NotFound(result.Error);
 
         return NoContent();
     }

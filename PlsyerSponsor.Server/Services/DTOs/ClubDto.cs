@@ -1,4 +1,4 @@
-﻿namespace PlayerSponsor.Server.Controllers.Responses;
+﻿namespace PlayerSponsor.Server.Services.DTOs;
 
 public class ClubDto
 {

@@ -12,8 +12,8 @@ using PlayerSponsor.Server.Data.Context;
 namespace PlayerSponsor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250329023600_RecreateIdentity")]
-    partial class RecreateIdentity
+    [Migration("20250329223655_UpdateForeignIdToClubIdAndUserId")]
+    partial class UpdateForeignIdToClubIdAndUserId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,6 +88,11 @@ namespace PlayerSponsor.Server.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("varchar(21)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -138,6 +143,10 @@ namespace PlayerSponsor.Server.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -262,24 +271,23 @@ namespace PlayerSponsor.Server.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClubId")
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("ClubId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.HasIndex("ClubId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Admins");
                 });
@@ -437,6 +445,13 @@ namespace PlayerSponsor.Server.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("PlayerSponsor.Server.Models.ApplicationUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -490,10 +505,25 @@ namespace PlayerSponsor.Server.Migrations
 
             modelBuilder.Entity("PlayerSponsor.Server.Models.ClubAdmin", b =>
                 {
-                    b.HasOne("PlayerSponsor.Server.Models.Club", null)
+                    b.HasOne("PlayerSponsor.Server.Models.ApplicationUser", null)
+                        .WithMany("ClubAdmins")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("PlayerSponsor.Server.Models.Club", "Club")
                         .WithMany("Admins")
                         .HasForeignKey("ClubId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PlayerSponsor.Server.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Club");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PlayerSponsor.Server.Models.Player", b =>
@@ -573,6 +603,11 @@ namespace PlayerSponsor.Server.Migrations
                     b.Navigation("Players");
 
                     b.Navigation("Sponsors");
+                });
+
+            modelBuilder.Entity("PlayerSponsor.Server.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("ClubAdmins");
                 });
 #pragma warning restore 612, 618
         }

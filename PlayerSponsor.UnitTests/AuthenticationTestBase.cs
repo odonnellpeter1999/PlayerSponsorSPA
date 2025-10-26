@@ -15,6 +15,7 @@ namespace PlayerSponsor.UnitTests
         public SqliteConnection sqliteConnection;
         public ApplicationDbContext identityDbContext;
         public UserManager<ApplicationUser> userManager;
+        public SignInManager<ApplicationUser> signInManager;
 
         [SetUp]
         public void Setup()
@@ -43,6 +44,7 @@ namespace PlayerSponsor.UnitTests
             // Get UserManager and RoleManager.
             userManager = serviceCollection.BuildServiceProvider().GetService<UserManager<ApplicationUser>>();
 
+            signInManager = serviceCollection.BuildServiceProvider().GetService<SignInManager<ApplicationUser>>();
             // Get token validation settings.
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory());

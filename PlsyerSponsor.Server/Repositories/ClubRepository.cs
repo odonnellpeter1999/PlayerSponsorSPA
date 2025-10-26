@@ -14,6 +14,6 @@ public class ClubRepository : Repository<Club>, IClubRepository
             .Include(c => c.Teams)
                 .ThenInclude(t => t.Players)
             .FirstOrDefaultAsync(c => c.Id == clubId);
-    }
+    } 
 }
 

@@ -6,6 +6,7 @@ using PlayerSponsor.Server.Data.Context;
 using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Repositories;
 using PlayerSponsor.Server.Services;
+using PlayerSponsor.Server.Services.ClubService;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -21,9 +21,10 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Club>()
-            .HasMany(c => c.Admins)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
+        .HasMany(c => c.Admins)
+        .WithOne(ca => ca.Club)
+        .HasForeignKey("ClubId")
+        .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Club>()
             .HasMany(c => c.Teams)
@@ -34,6 +35,12 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
             .HasMany(t => t.Players)
         .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Optional: Configure the User navigation property if needed
+        modelBuilder.Entity<ClubAdmin>()
+            .HasOne(ca => ca.User)
+            .WithMany() // or specify the navigation property on ApplicationUser
+            .HasForeignKey("UserId"); // Assuming there's a UserId property
 
         modelBuilder.Entity<Player>()
             .HasOne(p => p.AwaySponsor)

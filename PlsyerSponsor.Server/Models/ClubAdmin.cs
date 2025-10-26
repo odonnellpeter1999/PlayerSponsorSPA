@@ -3,7 +3,8 @@
 public class ClubAdmin
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public Club Club { get; set; }
+    public int ClubId { get; set; }
+    public ApplicationUser User { get; set; }
+    public string UserId { get; set; }
 }

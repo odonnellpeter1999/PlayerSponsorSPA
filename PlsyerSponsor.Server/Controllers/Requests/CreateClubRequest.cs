@@ -2,9 +2,7 @@
 
 public class CreateClubRequest
 {
-    public string Name { get; set; }
-    public string Logo { get; set; }
-    public string Bio { get; set; }
-    public string PaymentDetails { get; set; }
+    public required AccountDetails AdminAccountDetails { get; set; }
+    public required ClubDetails ClubDetails { get; set; }
 }
 

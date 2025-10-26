@@ -33,7 +33,7 @@ internal class ClubAccessHandlerTests: AuthenticationTestBase
         var context = CreateAuthorizationContext(user, new[] { new Claim("ClubAdmin", "123") });
 
         var httpContext = new DefaultHttpContext();
-        httpContext.Request.RouteValues["clubId"] = "123";
+        httpContext.Request.RouteValues["Id"] = "123";
         _httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
 
         // Act

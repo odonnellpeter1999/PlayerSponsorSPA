@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
@@ -35,7 +36,13 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [plugin()],
+    plugins: [
+        tanstackRouter({
+            target: 'react',
+            autoCodeSplitting: true,
+        }),
+        plugin()
+    ],
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -43,9 +50,11 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
+            '/api': {
+                target: target, // your backend server
+                changeOrigin: true,
+                secure: false // set to true if backend uses HTTPS and you trust the cert
+                //rewrite: (path) => path.replace(/^\/api/, ''), // optional: remove `/api` prefix
             }
         },
         port: 5173,

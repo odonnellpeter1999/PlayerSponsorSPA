@@ -26,7 +26,7 @@ public class ClubAccessHandler : AuthorizationHandler<ClubAccessRequirement>
         var clubIds = user.FindAll("ClubAdmin").Select(id => id.Value);
 
         var routeValues = _httpContextAccessor.HttpContext?.Request.RouteValues;
-        var requestedClubId = routeValues?["clubId"]?.ToString();
+        var requestedClubId = routeValues?["Id"]?.ToString();
 
         if (!clubIds.IsNullOrEmpty() && requestedClubId != null && clubIds.Contains(requestedClubId))
         {
