@@ -4,8 +4,52 @@ import { Box, Paper, Typography, TextField, Button, Alert, Divider, Container, G
 import { CreditCard, WarningAmber, Mail, Phone, CheckCircle } from '@mui/icons-material';
 import { useCreateUser } from '../../../queries/users/mutations';
 import { CreateClubRequest } from '../../../queries/users/types';
+import { AnyFieldApi, formOptions, useForm } from '@tanstack/react-form';
+
+interface FormData {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    phoneNumber?: string;
+    name: string;
+    description: string;
+    interacEmail: string;
+}
+
+function FieldInfo({ field }: { field: AnyFieldApi }) {
+    return (
+        <>
+            {field.state.meta.isTouched && !field.state.meta.isValid ? (
+                <em>{field.state.meta.errors.join(', ')}</em>
+            ) : null}
+            {field.state.meta.isValidating ? 'Validating...' : null}
+        </>
+    )
+}
+
+const defaultFormData: FormData = {
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phoneNumber: '',
+    name: '',
+    description: '',
+    interacEmail: ''
+};
 
 const SignUp = () => {
+    const formOpts = formOptions({
+        defaultValues: defaultFormData,
+    })
+
+    const form = useForm({
+        ...formOpts,
+        onSubmit: async ({ value }) => {
+            // Do something with form data
+            console.log(value)
+        },
+    })
+
     const createClubMutation = useCreateUser();
 
     // State for all administrative details
@@ -18,14 +62,14 @@ const SignUp = () => {
     const [eTransferEmail, setETransferEmail] = useState('odonnellpeter1999@gmail.com');
 
     const [isSaving, setIsSaving] = useState(false);
-    const [saveStatus, setSaveStatus] = useState(null); // 'success' or 'error'
+    const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
 
-    const handleSave = (e) => {
+    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSaving(true);
-        setSaveStatus(null);
+        form.handleSubmit();
 
-        const request:CreateClubRequest = {
+        const request: CreateClubRequest = {
             adminAccountDetails: {
                 email: publicContactEmail,
                 password: password,
@@ -38,8 +82,15 @@ const SignUp = () => {
                 interacEmail: eTransferEmail
             }
         };
-        
-        var response = createClubMutation.mutateAsync(request);
+
+        try {
+            createClubMutation.mutateAsync(request);
+            setSaveStatus('success');
+        } catch (error) {
+            setSaveStatus('error');
+        }
+
+        setIsSaving(false);
     };
 
     return (
@@ -79,6 +130,25 @@ const SignUp = () => {
                         <Typography variant="h5" component="h2" sx={{ fontWeight: 600, mb: 3, pb: 1, borderBottom: "1px solid #eee" }}>
                             Public Club Details
                         </Typography>
+
+                        <form.Field
+                            name="email"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Testing"
+                                        fullWidth
+                                        onBlur={field.handleBlur}
+                                        margin="normal"
+                                        variant="outlined"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        required
+                                    />
+                                    <FieldInfo field={field} />
+                                </>
+                            )}
+                        />
 
                         <TextField
                             label="Club Name (Title)"

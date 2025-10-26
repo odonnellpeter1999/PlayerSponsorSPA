@@ -3,6 +3,10 @@ export interface CreateClubRequest {
     clubDetails: ClubDetails
 }
 
+export interface CreateClubResponse {
+    clubId: string
+}
+
 export interface AccountDetails {
     email: string
     password: string
