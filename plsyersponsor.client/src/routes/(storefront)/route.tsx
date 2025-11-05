@@ -18,7 +18,7 @@ function RouteComponent() {
         <Container maxWidth="lg">
           <Toolbar disableGutters sx={{ justifyContent: 'center', py: 2 }}>
             <Typography variant="body2" color="inherit">
-              � {new Date().getFullYear()} My Simple MUI Site
+              � {new Date().getFullYear()} PlayerSponsor. All rights reserved.
             </Typography>
           </Toolbar>
         </Container>

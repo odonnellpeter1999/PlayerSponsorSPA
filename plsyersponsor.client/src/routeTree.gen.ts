@@ -13,7 +13,7 @@ import { Route as storefrontRouteRouteImport } from './routes/(storefront)/route
 import { Route as storefrontIndexRouteImport } from './routes/(storefront)/index'
 import { Route as storefrontClubRouteImport } from './routes/(storefront)/club'
 import { Route as storefrontAboutRouteImport } from './routes/(storefront)/about'
-import { Route as RegisterClubSignupRouteImport } from './routes/_register/club/signup'
+import { Route as RegisterClubSignupRouteImport } from './routes/_forms/club/signup'
 
 const storefrontRouteRoute = storefrontRouteRouteImport.update({
   id: '/(storefront)',
