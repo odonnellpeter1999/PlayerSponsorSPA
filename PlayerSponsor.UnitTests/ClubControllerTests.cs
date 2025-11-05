@@ -12,6 +12,7 @@ using PlayerSponsor.Server.Repositories;
 using PlayerSponsor.Server.Services;
 using PlayerSponsor.Server.Services.ClubService;
 using PlayerSponsor.Server.Services.DTOs;
+using PlayerSponsor.UnitTests.Common;
 using System.Security.Claims;
 
 namespace PlayerSponsor.UnitTests;
@@ -101,7 +102,8 @@ public class ClubControllerTests : AuthenticationTestBase
         // Arrange
         MockHttpContextAccessor.Setup(x => x.HttpContext.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, "1231") })));
 
-        var createRequest = new CreateClubRequest {
+        var createRequest = new CreateClubRequest
+        {
             AdminAccountDetails = new AccountDetails
             {
                 ConfirmPassword = "Testauto123!",
@@ -125,6 +127,40 @@ public class ClubControllerTests : AuthenticationTestBase
         Assert.That(resultObject, Is.Not.Null);
         Assert.That(resultObject.ClubId, Is.Not.Null);
     }
+
+    [Test]
+    public async Task CreateClub_InValidRequest_Returns_Correct_Error_Code()
+    {
+        // Arrange
+        MockHttpContextAccessor.Setup(x => x.HttpContext.User).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, "1231") })));
+
+        _controller.ModelState.AddModelError("Club.PaymentDetails", "Payment details are invalid.");
+
+        var createRequest = new CreateClubRequest
+        {
+            AdminAccountDetails = new AccountDetails
+            {
+                ConfirmPassword = "Testauto123!",
+                Email = "admin@gmail.com",
+                Password = "Testauto123!",
+            },
+            ClubDetails = new ClubDetails
+            {
+                Name = "Test Club",
+                Description = "Test Description",
+                InteracEmail = "invalid Email" // Invalid email format
+            }
+        };
+
+        // Act
+        var result = await _controller.Register(createRequest);
+
+        // Assert
+        var resultObject = GetValueFromActionResult<ProblemDetails>(result);
+        Assert.That(resultObject, Is.Not.Null);
+        Assert.That(resultObject.Detail, Is.EqualTo("Club.PaymentDetails"));
+    }
+
 
     [Test]
     public async Task UpdateClub_ValidRequest_ReturnsNoContentResult()
@@ -169,6 +205,29 @@ public class ClubControllerTests : AuthenticationTestBase
 
         // Assert
         Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
+    }
+
+    [Test]
+    public void User_ShouldPassValidation_WhenModelIsValid()
+    {
+        var model = new CreateClubRequest
+        {
+            AdminAccountDetails = new AccountDetails
+            {
+                Email = "admin@gmail.com",
+                ConfirmPassword = "Testauto123!",
+                Password = "Testauto123!",
+            },
+            ClubDetails = new ClubDetails
+            {
+                Name = "Test Club",
+                Description = "Test Description",
+                InteracEmail = "invalid Email" // Invalid email format
+            }
+        };
+
+        var validationResult = ModelValidationHelper.ValidateModel(model.AdminAccountDetails);
+        Assert.That(validationResult, Is.Empty);
     }
 
     private T GetValueFromActionResult<T>(IActionResult actionResult)

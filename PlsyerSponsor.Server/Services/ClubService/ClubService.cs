@@ -36,12 +36,6 @@ public class ClubService(IClubRepository clubRepository, IMapper mapper, IClubAd
 
     public async Task<ResultT<Club>> CreateClub(Club newClub)
     {
-        var validationResult = IsClubValid(newClub);
-        if (!validationResult.IsSuccess)
-        {
-            return ResultT<Club>.Failure(validationResult.Error ?? Error.Validation("Club.Validation", "Error creating your club"));
-        }
-
         newClub.Logo = "";
         newClub.PlayerKey = Guid.NewGuid().ToString();
 
@@ -54,63 +48,6 @@ public class ClubService(IClubRepository clubRepository, IMapper mapper, IClubAd
         }
 
         return ResultT<Club>.Success(club);
-    }
-
-    private ResultT<bool> IsClubValid(Club newClub)
-    {
-        if (string.IsNullOrWhiteSpace(newClub.Name))
-        {
-            _logger.LogError("Club name is required.");
-            return Error.Validation("Club.Validation", "Club name is required.");
-        }
-
-        if (newClub.Name.Length > 100)
-        {
-            _logger.LogError("Club name cannot exceed 100 characters.");
-            return Error.Validation("Club.Validation", "Club name cannot exceed 100 characters.");
-        }
-
-        if (string.IsNullOrWhiteSpace(newClub.Bio))
-        {
-            _logger.LogError("Club bio is required.");
-            return Error.Validation("Club.Validation", "Club description is required.");
-        }
-
-        if (newClub.Bio.Length > 500)
-        {
-            _logger.LogError("Club bio cannot exceed 500 characters.");
-            return Error.Validation("Club.Validation", "Club description cannot exceed 500 characters.");
-        }
-
-        if (!string.IsNullOrWhiteSpace(newClub.PaymentDetails))
-        {
-            if (newClub.PaymentDetails.Length > 200)
-            {
-                _logger.LogError("Payment details cannot exceed 200 characters.");
-                return Error.Validation("Club.Validation", "Payment details cannot exceed 200 characters.");
-            }
-
-            if (!IsValidEmail(newClub.PaymentDetails))
-            {
-                _logger.LogError("Payment details must be a valid email address.");
-                return Error.Validation("Club.Validation", "Payment details must be a valid email address.");
-            }
-        }
-
-        return ResultT<bool>.Success(true);
-    }
-
-    private bool IsValidEmail(string email)
-    {
-        try
-        {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     public async Task<Result> UpdateClubAsync(Club updatedClub)

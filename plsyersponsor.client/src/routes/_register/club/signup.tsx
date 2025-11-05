@@ -1,96 +1,104 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react';
 import { Box, Paper, Typography, TextField, Button, Alert, Divider, Container, Grid } from '@mui/material';
 import { CreditCard, WarningAmber, Mail, Phone, CheckCircle } from '@mui/icons-material';
-import { useCreateUser } from '../../../queries/users/mutations';
+import { createUser } from '../../../queries/users/mutation-functions';
 import { CreateClubRequest } from '../../../queries/users/types';
 import { AnyFieldApi, formOptions, useForm } from '@tanstack/react-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { usersKeys } from '../../../queries/keys';
+import { ApiErrorResponse } from '../../../api/client';
+import { useState } from 'react';
 
-interface FormData {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    phoneNumber?: string;
-    name: string;
-    description: string;
-    interacEmail: string;
-}
+function FieldInfo({ field, formValidationErrors: formValidationErrors }: { field: AnyFieldApi, formValidationErrors: Record<string, string[]> }) {
 
-function FieldInfo({ field }: { field: AnyFieldApi }) {
+    var errors = field.state.meta.errors.join(', ')
+
+    if (formValidationErrors[field.name]) {
+        field.state.meta.isValid = false;
+        errors += (errors ? ', ' : '') + formValidationErrors[field.name].join(', ');
+    }
+
     return (
         <>
-            {field.state.meta.isTouched && !field.state.meta.isValid ? (
-                <em>{field.state.meta.errors.join(', ')}</em>
+            {errors ? (
+                <Typography color="error">{errors}</Typography>
             ) : null}
             {field.state.meta.isValidating ? 'Validating...' : null}
         </>
     )
 }
 
-const defaultFormData: FormData = {
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phoneNumber: '',
-    name: '',
-    description: '',
-    interacEmail: ''
+const defaultFormData: CreateClubRequest = {
+    adminAccountDetails: {
+        email: 'odonnellpeter1999@gmail.com',
+        password: 'Testauto123!',
+        confirmPassword: 'Testauto123!',
+        phoneNumber: '6478509311'
+    },
+    clubDetails: {
+        name: 'My Club',
+        description: 'This is my club',
+        interacEmail: 'myclub@example.com'
+    }
 };
 
 const SignUp = () => {
+    // State
+    const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
+    const [serverError, setServerError] = useState<string>("");
+
+    // Hook Configuration
     const formOpts = formOptions({
-        defaultValues: defaultFormData,
-    })
+        defaultValues: defaultFormData
+    });
 
     const form = useForm({
         ...formOpts,
-        onSubmit: async ({ value }) => {
-            // Do something with form data
-            console.log(value)
-        },
-    })
+        onSubmit: async ({ value }) => onSubmit(value)
+    });
 
-    const createClubMutation = useCreateUser();
+    const qc = useQueryClient();
 
-    // State for all administrative details
-    const [clubName, setClubName] = useState('Test');
-    const [description, setDescription] = useState('Testing');
-    const [publicContactEmail, setPublicContactEmail] = useState('test2@gmail.com');
-    const [adminPhone, setAdminPhone] = useState('0838376683');
-    const [password, setPassword] = useState('Testauto123!');
-    const [confirmPassword, setConfirmPassword] = useState('Testauto123!');
-    const [eTransferEmail, setETransferEmail] = useState('odonnellpeter1999@gmail.com');
+    const createClubMutation = useMutation({
+        mutationFn: createUser,
+        onSuccess: () => qc.invalidateQueries({ queryKey: usersKeys.all }),
+        onError: (errors) => handleErrors(errors as ApiErrorResponse)
+    });
 
-    const [isSaving, setIsSaving] = useState(false);
-    const [saveStatus, setSaveStatus] = useState<'success' | 'error' | null>(null);
-
-    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+    // State Change Handlers
+    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSaving(true);
-        form.handleSubmit();
+        await form.handleSubmit(e);
+    };
 
-        const request: CreateClubRequest = {
-            adminAccountDetails: {
-                email: publicContactEmail,
-                password: password,
-                confirmPassword: confirmPassword,
-                phoneNumber: adminPhone
-            },
-            clubDetails: {
-                name: clubName,
-                description: description,
-                interacEmail: eTransferEmail
-            }
-        };
+    const handleErrors = (apiResponse: ApiErrorResponse) => {
 
-        try {
-            createClubMutation.mutateAsync(request);
-            setSaveStatus('success');
-        } catch (error) {
-            setSaveStatus('error');
-        }
+        if (apiResponse.status == 400 && apiResponse.errors)
+            setValidationErrors(apiResponse.errors || {});
+            const toCamelCase = (str: string) => {
+                return str
+                    .split('.')
+                    .map((word) =>
+                        word.charAt(0).toLowerCase() + word.slice(1)
+                    )
+                    .join('.');
+            };
 
-        setIsSaving(false);
+            const camelCaseErrors: Record<string, string[]> = {};
+            Object.keys(apiResponse.errors || {}).forEach((key) => {
+                camelCaseErrors[toCamelCase(key)] = (apiResponse.errors ?? {})[key];
+            });
+
+            setValidationErrors(camelCaseErrors);
+        if (apiResponse.title && apiResponse.status == 400)
+            setServerError(apiResponse.title);
+
+        return;
+    };
+
+    const onSubmit = async (request: CreateClubRequest) => {
+
+        await createClubMutation.mutateAsync(request);
     };
 
     return (
@@ -105,6 +113,7 @@ const SignUp = () => {
                     />
                 </Box>
                 <Divider />
+
                 {/* Header (Simulating AppBar) */}
                 <Grid container justifyContent={'center'} sx={{ p: 3, borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }} >
                     <Typography variant="h4" component="h1" sx={{ fontWeight: 700, display: "flex", alignItems: "center", gap: 1 }}>
@@ -112,15 +121,10 @@ const SignUp = () => {
                     </Typography>
                 </Grid>
 
-                {/* Status Message (Simulating Alert) */}
-                {saveStatus === 'success' && (
+                {/* Status Messages (Simulating Alert) */}
+                {createClubMutation.isSuccess && (
                     <Alert icon={<CheckCircle fontSize="inherit" />} severity="success" sx={{ borderRadius: 0 }}>
                         Details saved successfully and published!
-                    </Alert>
-                )}
-                {saveStatus === 'error' && (
-                    <Alert icon={<WarningAmber fontSize="inherit" />} severity="error" sx={{ borderRadius: 0 }}>
-                        Error saving details. Please check the form and try again.
                     </Alert>
                 )}
 
@@ -132,45 +136,43 @@ const SignUp = () => {
                         </Typography>
 
                         <form.Field
-                            name="email"
+                            name="clubDetails.name"
                             children={(field) => (
                                 <>
                                     <TextField
-                                        label="Testing"
+                                        error={field.state.meta.isTouched && !field.state.meta.isValid}
+                                        label="Club Name (Title)"
                                         fullWidth
-                                        onBlur={field.handleBlur}
                                         margin="normal"
                                         variant="outlined"
                                         value={field.state.value}
                                         onChange={(e) => field.handleChange(e.target.value)}
                                         required
                                     />
-                                    <FieldInfo field={field} />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
                                 </>
                             )}
                         />
 
-                        <TextField
-                            label="Club Name (Title)"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            value={clubName}
-                            onChange={(e) => setClubName(e.target.value)}
-                            required
-                        />
-
-                        <TextField
-                            label="Description (Public Text)"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            multiline
-                            rows={4}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            helperText="This text appears prominently on your public support page."
-                            required
+                        <form.Field
+                            name="clubDetails.description"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Description (Public Text)"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        multiline
+                                        rows={4}
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        helperText="This text appears prominently on your public support page."
+                                        required
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
                     </Box>
                     <Divider />
@@ -180,47 +182,94 @@ const SignUp = () => {
                             Administrative Account Information
                         </Typography>
 
-                        <TextField
-                            label="Public Contact Email"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            type="email"
-                            value={publicContactEmail}
-                            onChange={(e) => setPublicContactEmail(e.target.value)}
-                            InputProps={{ startAdornment: <Mail sx={{ mr: 1, color: 'action.active' }} /> }}
-                            required
+                        <form.Field
+                            name="adminAccountDetails.email"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Public Contact Email"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        type="email"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        InputProps={{ startAdornment: <Mail sx={{ mr: 1, color: 'action.active' }} /> }}
+                                        required
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
 
-                        <TextField
-                            label="Admin Contact Phone (Optional)"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            type="tel"
-                            value={adminPhone}
-                            onChange={(e) => setAdminPhone(e.target.value)}
-                            InputProps={{ startAdornment: <Phone sx={{ mr: 1, color: 'action.active' }} /> }}
+                        <form.Field
+                            name="adminAccountDetails.phoneNumber"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Admin Contact Phone (Optional)"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        type="tel"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        InputProps={{ startAdornment: <Phone sx={{ mr: 1, color: 'action.active' }} /> }}
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
 
-                        <TextField
-                            label="Password"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+
+                        <form.Field
+                            name="adminAccountDetails.password"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Password"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        type="password"
+                                        value={field.state.value}
+                                        helperText="Passwords should contain:
+                                        uppercase character, 
+                                        lowercase character, 
+                                        digit, and a non-alphanumeric character, 
+                                        and must also be at least six characters long."
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
 
-                        <TextField
-                            label="Confirm Password"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        <form.Field
+                            name="adminAccountDetails.confirmPassword"
+                            validators={{
+                                onChangeListenTo: ['adminAccountDetails.password'],
+                                onChange: ({ value, fieldApi }) => {
+                                    if (value !== fieldApi.form.getFieldValue('adminAccountDetails.password')) {
+                                        return 'Passwords do not match'
+                                    }
+                                    return undefined
+                                },
+                            }}
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="Confirm Password"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        type="password"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
                     </Box>
 
@@ -235,32 +284,44 @@ const SignUp = () => {
 
                         <Alert severity="warning" sx={{ mb: 2 }}>
                             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>CRITICAL PAYMENT SETTING:</Typography>
-                            This is the exact email linked to your bank account for **Autodeposit**. Do not share this publicly for inquiries.
+                            This is the exact email linked to your bank account for Interac Payments
                         </Alert>
-
-                        <TextField
-                            label="E-Transfer Recipient Email"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                            type="email"
-                            value={eTransferEmail}
-                            onChange={(e) => setETransferEmail(e.target.value)}
-                            sx={{ '& .MuiOutlinedInput-root': { borderColor: 'error.main' } }}
-                            required
+                        <form.Field
+                            name="clubDetails.interacEmail"
+                            children={(field) => (
+                                <>
+                                    <TextField
+                                        label="E-Transfer Recipient Email"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        type="email"
+                                        value={field.state.value}
+                                        onChange={(e) => field.handleChange(e.target.value)}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderColor: 'error.main' } }}
+                                        required
+                                    />
+                                    <FieldInfo field={field} formValidationErrors={validationErrors} />
+                                </>
+                            )}
                         />
                     </Box>
-
+                    {/* Global Error Message */}
+                    {createClubMutation.isError && (
+                        <Alert icon={<WarningAmber fontSize="inherit" />} severity="error" sx={{ borderRadius: 0 }}>
+                            {serverError || 'An error occurred while creating the club. Please try again later.'}
+                        </Alert>
+                    )}
                     {/* Action Button */}
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
                         size="large"
-                        disabled={isSaving}
+                        disabled={createClubMutation.isPending}
                         sx={{ mt: 2, py: 1.5, borderRadius: '24px', fontWeight: 600, fontSize: '1.1rem' }}
                     >
-                        {isSaving ? 'Saving...' : 'Next'}
+                        {createClubMutation.isPending ? 'Saving...' : 'Next'}
                     </Button>
                 </Box>
             </Paper>

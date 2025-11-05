@@ -51,6 +51,11 @@ public class ClubController : BaseController
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CreateClubRequest clubRequest)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         // Create the club
         var newClub = _mapper.Map<Club>(clubRequest);
 
