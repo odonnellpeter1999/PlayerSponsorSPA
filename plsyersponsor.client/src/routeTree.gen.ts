@@ -13,7 +13,8 @@ import { Route as storefrontRouteRouteImport } from './routes/(storefront)/route
 import { Route as storefrontIndexRouteImport } from './routes/(storefront)/index'
 import { Route as storefrontClubRouteImport } from './routes/(storefront)/club'
 import { Route as storefrontAboutRouteImport } from './routes/(storefront)/about'
-import { Route as RegisterClubSignupRouteImport } from './routes/_forms/club/signup'
+import { Route as FormsClubSignupRouteImport } from './routes/_forms/club/signup'
+import { Route as FormsClubSigninRouteImport } from './routes/_forms/club/signin'
 
 const storefrontRouteRoute = storefrontRouteRouteImport.update({
   id: '/(storefront)',
@@ -34,9 +35,14 @@ const storefrontAboutRoute = storefrontAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => storefrontRouteRoute,
 } as any)
-const RegisterClubSignupRoute = RegisterClubSignupRouteImport.update({
-  id: '/_register/club/signup',
+const FormsClubSignupRoute = FormsClubSignupRouteImport.update({
+  id: '/_forms/club/signup',
   path: '/club/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormsClubSigninRoute = FormsClubSigninRouteImport.update({
+  id: '/_forms/club/signin',
+  path: '/club/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -44,13 +50,15 @@ export interface FileRoutesByFullPath {
   '/about': typeof storefrontAboutRoute
   '/club': typeof storefrontClubRoute
   '/': typeof storefrontIndexRoute
-  '/club/signup': typeof RegisterClubSignupRoute
+  '/club/signin': typeof FormsClubSigninRoute
+  '/club/signup': typeof FormsClubSignupRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof storefrontAboutRoute
   '/club': typeof storefrontClubRoute
   '/': typeof storefrontIndexRoute
-  '/club/signup': typeof RegisterClubSignupRoute
+  '/club/signin': typeof FormsClubSigninRoute
+  '/club/signup': typeof FormsClubSignupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,25 +66,28 @@ export interface FileRoutesById {
   '/(storefront)/about': typeof storefrontAboutRoute
   '/(storefront)/club': typeof storefrontClubRoute
   '/(storefront)/': typeof storefrontIndexRoute
-  '/_register/club/signup': typeof RegisterClubSignupRoute
+  '/_forms/club/signin': typeof FormsClubSigninRoute
+  '/_forms/club/signup': typeof FormsClubSignupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/club' | '/' | '/club/signup'
+  fullPaths: '/about' | '/club' | '/' | '/club/signin' | '/club/signup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/club' | '/' | '/club/signup'
+  to: '/about' | '/club' | '/' | '/club/signin' | '/club/signup'
   id:
     | '__root__'
     | '/(storefront)'
     | '/(storefront)/about'
     | '/(storefront)/club'
     | '/(storefront)/'
-    | '/_register/club/signup'
+    | '/_forms/club/signin'
+    | '/_forms/club/signup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   storefrontRouteRoute: typeof storefrontRouteRouteWithChildren
-  RegisterClubSignupRoute: typeof RegisterClubSignupRoute
+  FormsClubSigninRoute: typeof FormsClubSigninRoute
+  FormsClubSignupRoute: typeof FormsClubSignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,11 +120,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof storefrontAboutRouteImport
       parentRoute: typeof storefrontRouteRoute
     }
-    '/_register/club/signup': {
-      id: '/_register/club/signup'
+    '/_forms/club/signup': {
+      id: '/_forms/club/signup'
       path: '/club/signup'
       fullPath: '/club/signup'
-      preLoaderRoute: typeof RegisterClubSignupRouteImport
+      preLoaderRoute: typeof FormsClubSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_forms/club/signin': {
+      id: '/_forms/club/signin'
+      path: '/club/signin'
+      fullPath: '/club/signin'
+      preLoaderRoute: typeof FormsClubSigninRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -137,7 +155,8 @@ const storefrontRouteRouteWithChildren = storefrontRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   storefrontRouteRoute: storefrontRouteRouteWithChildren,
-  RegisterClubSignupRoute: RegisterClubSignupRoute,
+  FormsClubSigninRoute: FormsClubSigninRoute,
+  FormsClubSignupRoute: FormsClubSignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

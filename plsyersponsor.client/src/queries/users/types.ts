@@ -20,3 +20,8 @@ export interface ClubDetails {
     interacEmail: string
     description?: string
 }
+
+export interface ClubSignInRequest {
+    email:string,
+    password:string
+}
