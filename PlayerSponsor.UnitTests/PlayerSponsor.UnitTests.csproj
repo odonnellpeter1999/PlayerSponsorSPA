@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlsyerSponsor.Server\PlayerSponsor.Server.csproj" />
+    <ProjectReference Include="..\PlayerSponsor.Server\PlayerSponsor.Server.csproj" />
   </ItemGroup>
 
 </Project>

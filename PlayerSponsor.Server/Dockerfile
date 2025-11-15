@@ -19,20 +19,20 @@ RUN apt-get -y install nodejs
 FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["PlsyerSponsor.Server/PlsyerSponsor.Server.csproj", "PlsyerSponsor.Server/"]
+COPY ["PlayerSponsor.Server/PlayerSponsor.Server.csproj", "PlayerSponsor.Server/"]
 COPY ["playersponsor.client/playersponsor.client.esproj", "playersponsor.client/"]
-RUN dotnet restore "./PlsyerSponsor.Server/PlsyerSponsor.Server.csproj"
+RUN dotnet restore "./PlayerSponsor.Server/PlayerSponsor.Server.csproj"
 COPY . .
-WORKDIR "/src/PlsyerSponsor.Server"
-RUN dotnet build "./PlsyerSponsor.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/PlayerSponsor.Server"
+RUN dotnet build "./PlayerSponsor.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./PlsyerSponsor.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./PlayerSponsor.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PlsyerSponsor.Server.dll"]
+ENTRYPOINT ["dotnet", "PlayerSponsor.Server.dll"]
