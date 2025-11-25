@@ -55,6 +55,12 @@ export default defineConfig({
                 changeOrigin: true,
                 secure: false // set to true if backend uses HTTPS and you trust the cert
                 //rewrite: (path) => path.replace(/^\/api/, ''), // optional: remove `/api` prefix
+            }, 
+            '/login': {
+                target: target, // your backend server
+                changeOrigin: true,
+                secure: false // set to true if backend uses HTTPS and you trust the cert
+                //rewrite: (path) => path.replace(/^\/api/, ''), // optional: remove `/api` prefix
             }
         },
         port: 5173,

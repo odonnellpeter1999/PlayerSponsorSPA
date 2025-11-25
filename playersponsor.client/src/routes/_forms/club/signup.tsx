@@ -3,58 +3,21 @@ import { Box, Paper, Typography, TextField, Button, Alert, Divider, Container, G
 import { CreditCard, WarningAmber, Mail, Phone, CheckCircle } from '@mui/icons-material';
 import { createUser } from '../../../queries/users/mutation-functions';
 import { CreateClubRequest } from '../../../queries/users/types';
-import { AnyFieldApi, formOptions, useForm } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersKeys } from '../../../queries/keys';
 import { ApiErrorResponse } from '../../../api/client';
 import { useState } from 'react';
-
-function FieldInfo({ field, formValidationErrors: formValidationErrors }: { field: AnyFieldApi, formValidationErrors: Record<string, string[]> }) {
-
-    var errors = field.state.meta.errors.join(', ')
-
-    if (formValidationErrors[field.name]) {
-        field.state.meta.isValid = false;
-        errors += (errors ? ', ' : '') + formValidationErrors[field.name].join(', ');
-    }
-
-    return (
-        <>
-            {errors ? (
-                <Typography color="error">{errors}</Typography>
-            ) : null}
-            {field.state.meta.isValidating ? 'Validating...' : null}
-        </>
-    )
-}
-
-const defaultFormData: CreateClubRequest = {
-    adminAccountDetails: {
-        email: 'odonnellpeter1999@gmail.com',
-        password: 'Testauto123!',
-        confirmPassword: 'Testauto123!',
-        phoneNumber: '6478509311'
-    },
-    clubDetails: {
-        name: 'My Club',
-        description: 'This is my club',
-        interacEmail: 'myclub@example.com'
-    }
-};
+import FieldInfo from '../../../components/forms/FieldInfo';
 
 const SignUp = () => {
+    
     // State
     const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
     const [serverError, setServerError] = useState<string>("");
 
-    // Hook Configuration
-    const formOpts = formOptions({
-        defaultValues: defaultFormData
-    });
-
     const form = useForm({
-        ...formOpts,
-        onSubmit: async ({ value }) => onSubmit(value)
+        onSubmit: async ({ value }) => onSubmit(value as CreateClubRequest),
     });
 
     const qc = useQueryClient();
@@ -97,7 +60,6 @@ const SignUp = () => {
     };
 
     const onSubmit = async (request: CreateClubRequest) => {
-
         await createClubMutation.mutateAsync(request);
     };
 
@@ -329,6 +291,6 @@ const SignUp = () => {
     );
 };
 
-export const Route = createFileRoute('/_register/club/signup')({
+export const Route = createFileRoute('/_forms/club/signup')({
     component: SignUp,
 })
