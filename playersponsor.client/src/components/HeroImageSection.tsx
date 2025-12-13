@@ -8,7 +8,7 @@ const HeroImageSection = () => {
         <CardMedia
           component="img"
           height="300" // Fixed height for a consistent look
-          image="Clan.png" // Placeholder image
+          image="../Clan.png" // Placeholder image
           alt="Club Stadium or Team"
           sx={{ objectFit: 'cover', width: '100%' }} // Ensure it covers the area and is responsive
         />

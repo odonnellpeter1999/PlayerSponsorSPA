@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as storefrontRouteRouteImport } from './routes/(storefront)/route'
 import { Route as storefrontIndexRouteImport } from './routes/(storefront)/index'
-import { Route as storefrontClubRouteImport } from './routes/(storefront)/club'
 import { Route as storefrontAboutRouteImport } from './routes/(storefront)/about'
 import { Route as FormsClubSignupRouteImport } from './routes/_forms/club/signup'
 import { Route as FormsClubSigninRouteImport } from './routes/_forms/club/signin'
 import { Route as FormsClubDashboardRouteImport } from './routes/_forms/club/dashboard'
+import { Route as storefrontclubSponsorshipsRouteImport } from './routes/(storefront)/(club)/sponsorships'
 
 const storefrontRouteRoute = storefrontRouteRouteImport.update({
   id: '/(storefront)',
@@ -24,11 +24,6 @@ const storefrontRouteRoute = storefrontRouteRouteImport.update({
 const storefrontIndexRoute = storefrontIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => storefrontRouteRoute,
-} as any)
-const storefrontClubRoute = storefrontClubRouteImport.update({
-  id: '/club',
-  path: '/club',
   getParentRoute: () => storefrontRouteRoute,
 } as any)
 const storefrontAboutRoute = storefrontAboutRouteImport.update({
@@ -51,19 +46,25 @@ const FormsClubDashboardRoute = FormsClubDashboardRouteImport.update({
   path: '/club/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const storefrontclubSponsorshipsRoute =
+  storefrontclubSponsorshipsRouteImport.update({
+    id: '/(club)/sponsorships',
+    path: '/sponsorships',
+    getParentRoute: () => storefrontRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/about': typeof storefrontAboutRoute
-  '/club': typeof storefrontClubRoute
   '/': typeof storefrontIndexRoute
+  '/sponsorships': typeof storefrontclubSponsorshipsRoute
   '/club/dashboard': typeof FormsClubDashboardRoute
   '/club/signin': typeof FormsClubSigninRoute
   '/club/signup': typeof FormsClubSignupRoute
 }
 export interface FileRoutesByTo {
   '/about': typeof storefrontAboutRoute
-  '/club': typeof storefrontClubRoute
   '/': typeof storefrontIndexRoute
+  '/sponsorships': typeof storefrontclubSponsorshipsRoute
   '/club/dashboard': typeof FormsClubDashboardRoute
   '/club/signin': typeof FormsClubSigninRoute
   '/club/signup': typeof FormsClubSignupRoute
@@ -72,8 +73,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(storefront)': typeof storefrontRouteRouteWithChildren
   '/(storefront)/about': typeof storefrontAboutRoute
-  '/(storefront)/club': typeof storefrontClubRoute
   '/(storefront)/': typeof storefrontIndexRoute
+  '/(storefront)/(club)/sponsorships': typeof storefrontclubSponsorshipsRoute
   '/_forms/club/dashboard': typeof FormsClubDashboardRoute
   '/_forms/club/signin': typeof FormsClubSigninRoute
   '/_forms/club/signup': typeof FormsClubSignupRoute
@@ -82,16 +83,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/about'
-    | '/club'
     | '/'
+    | '/sponsorships'
     | '/club/dashboard'
     | '/club/signin'
     | '/club/signup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/about'
-    | '/club'
     | '/'
+    | '/sponsorships'
     | '/club/dashboard'
     | '/club/signin'
     | '/club/signup'
@@ -99,8 +100,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(storefront)'
     | '/(storefront)/about'
-    | '/(storefront)/club'
     | '/(storefront)/'
+    | '/(storefront)/(club)/sponsorships'
     | '/_forms/club/dashboard'
     | '/_forms/club/signin'
     | '/_forms/club/signup'
@@ -127,13 +128,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof storefrontIndexRouteImport
-      parentRoute: typeof storefrontRouteRoute
-    }
-    '/(storefront)/club': {
-      id: '/(storefront)/club'
-      path: '/club'
-      fullPath: '/club'
-      preLoaderRoute: typeof storefrontClubRouteImport
       parentRoute: typeof storefrontRouteRoute
     }
     '/(storefront)/about': {
@@ -164,19 +158,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsClubDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(storefront)/(club)/sponsorships': {
+      id: '/(storefront)/(club)/sponsorships'
+      path: '/sponsorships'
+      fullPath: '/sponsorships'
+      preLoaderRoute: typeof storefrontclubSponsorshipsRouteImport
+      parentRoute: typeof storefrontRouteRoute
+    }
   }
 }
 
 interface storefrontRouteRouteChildren {
   storefrontAboutRoute: typeof storefrontAboutRoute
-  storefrontClubRoute: typeof storefrontClubRoute
   storefrontIndexRoute: typeof storefrontIndexRoute
+  storefrontclubSponsorshipsRoute: typeof storefrontclubSponsorshipsRoute
 }
 
 const storefrontRouteRouteChildren: storefrontRouteRouteChildren = {
   storefrontAboutRoute: storefrontAboutRoute,
-  storefrontClubRoute: storefrontClubRoute,
   storefrontIndexRoute: storefrontIndexRoute,
+  storefrontclubSponsorshipsRoute: storefrontclubSponsorshipsRoute,
 }
 
 const storefrontRouteRouteWithChildren = storefrontRouteRoute._addFileChildren(
