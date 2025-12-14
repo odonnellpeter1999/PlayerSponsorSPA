@@ -17,7 +17,7 @@ import { Route as ClubTeamslugSignupRouteImport } from './routes/club/$teamslug/
 import { Route as ClubTeamslugSigninRouteImport } from './routes/club/$teamslug/signin'
 import { Route as ClubTeamslugDashboardRouteImport } from './routes/club/$teamslug/dashboard'
 import { Route as ClubTeamslugstorefrontRouteRouteImport } from './routes/club/$teamslug/(storefront)/route'
-import { Route as ClubTeamslugstorefrontSponsorshipsRouteImport } from './routes/club/$teamslug/(storefront)/sponsorships'
+import { Route as ClubTeamslugstorefrontIndexRouteImport } from './routes/club/$teamslug/(storefront)/index'
 
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
@@ -58,10 +58,10 @@ const ClubTeamslugstorefrontRouteRoute =
     id: '/(storefront)',
     getParentRoute: () => ClubTeamslugRouteRoute,
   } as any)
-const ClubTeamslugstorefrontSponsorshipsRoute =
-  ClubTeamslugstorefrontSponsorshipsRouteImport.update({
-    id: '/sponsorships',
-    path: '/sponsorships',
+const ClubTeamslugstorefrontIndexRoute =
+  ClubTeamslugstorefrontIndexRouteImport.update({
+    id: '/',
+    path: '/',
     getParentRoute: () => ClubTeamslugstorefrontRouteRoute,
   } as any)
 
@@ -72,16 +72,15 @@ export interface FileRoutesByFullPath {
   '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
   '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
   '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
-  '/club/$teamslug/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
+  '/club/$teamslug/': typeof ClubTeamslugstorefrontIndexRoute
 }
 export interface FileRoutesByTo {
-  '/club/$teamslug': typeof ClubTeamslugstorefrontRouteRouteWithChildren
+  '/club/$teamslug': typeof ClubTeamslugstorefrontIndexRoute
   '/about': typeof publicAboutRoute
   '/': typeof publicIndexRoute
   '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
   '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
   '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
-  '/club/$teamslug/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -93,7 +92,7 @@ export interface FileRoutesById {
   '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
   '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
   '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
-  '/club/$teamslug/(storefront)/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
+  '/club/$teamslug/(storefront)/': typeof ClubTeamslugstorefrontIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,7 +103,7 @@ export interface FileRouteTypes {
     | '/club/$teamslug/dashboard'
     | '/club/$teamslug/signin'
     | '/club/$teamslug/signup'
-    | '/club/$teamslug/sponsorships'
+    | '/club/$teamslug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/club/$teamslug'
@@ -113,7 +112,6 @@ export interface FileRouteTypes {
     | '/club/$teamslug/dashboard'
     | '/club/$teamslug/signin'
     | '/club/$teamslug/signup'
-    | '/club/$teamslug/sponsorships'
   id:
     | '__root__'
     | '/(public)'
@@ -124,7 +122,7 @@ export interface FileRouteTypes {
     | '/club/$teamslug/dashboard'
     | '/club/$teamslug/signin'
     | '/club/$teamslug/signup'
-    | '/club/$teamslug/(storefront)/sponsorships'
+    | '/club/$teamslug/(storefront)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,11 +188,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClubTeamslugstorefrontRouteRouteImport
       parentRoute: typeof ClubTeamslugRouteRoute
     }
-    '/club/$teamslug/(storefront)/sponsorships': {
-      id: '/club/$teamslug/(storefront)/sponsorships'
-      path: '/sponsorships'
-      fullPath: '/club/$teamslug/sponsorships'
-      preLoaderRoute: typeof ClubTeamslugstorefrontSponsorshipsRouteImport
+    '/club/$teamslug/(storefront)/': {
+      id: '/club/$teamslug/(storefront)/'
+      path: '/'
+      fullPath: '/club/$teamslug/'
+      preLoaderRoute: typeof ClubTeamslugstorefrontIndexRouteImport
       parentRoute: typeof ClubTeamslugstorefrontRouteRoute
     }
   }
@@ -215,13 +213,12 @@ const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
 )
 
 interface ClubTeamslugstorefrontRouteRouteChildren {
-  ClubTeamslugstorefrontSponsorshipsRoute: typeof ClubTeamslugstorefrontSponsorshipsRoute
+  ClubTeamslugstorefrontIndexRoute: typeof ClubTeamslugstorefrontIndexRoute
 }
 
 const ClubTeamslugstorefrontRouteRouteChildren: ClubTeamslugstorefrontRouteRouteChildren =
   {
-    ClubTeamslugstorefrontSponsorshipsRoute:
-      ClubTeamslugstorefrontSponsorshipsRoute,
+    ClubTeamslugstorefrontIndexRoute: ClubTeamslugstorefrontIndexRoute,
   }
 
 const ClubTeamslugstorefrontRouteRouteWithChildren =

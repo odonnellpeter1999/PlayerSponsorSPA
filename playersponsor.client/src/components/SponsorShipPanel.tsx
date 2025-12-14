@@ -89,7 +89,7 @@ const SponsorShipPanel = ({
             </Stack>
             <Button
               variant="contained"
-              color="primary"
+              color="secondary"
               startIcon={<EmailIcon />}
               onClick={handleEmailClick}
             >
@@ -119,7 +119,7 @@ const SponsorShipPanel = ({
                   <IconButton
                     key={social.name}
                     aria-label={social.name}
-                    color="primary"
+                    color="secondary"
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"

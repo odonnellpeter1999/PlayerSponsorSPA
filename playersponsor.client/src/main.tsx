@@ -9,9 +9,6 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from './queryClient'
 
-//import './index.css'
-//import App from './App.tsx'
-
 // Create a new router instance
 const router = createRouter({ routeTree })
 

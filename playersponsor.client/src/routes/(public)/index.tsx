@@ -29,12 +29,12 @@ function HomePage() {
                 </Typography>
                 <Grid container spacing={2} justifyContent="center" sx={{ mb: 6 }}>
                     <Grid>
-                        <Button variant="contained" size="large">
+                        <Button variant="contained" color='secondary' size="large">
                             Get Started
                         </Button>
                     </Grid>
                     <Grid>
-                        <Button variant="outlined" size="large">
+                        <Button variant="outlined" color='secondary' size="large">
                             Learn More
                         </Button>
                     </Grid>

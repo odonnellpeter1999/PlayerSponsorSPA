@@ -98,7 +98,7 @@ const LogoNavBar = ({ shieldBorderColour, shieldBorderFill}: LogoProps) => {
         />
         <path
           style={{
-            fill: "white",
+            fill: shieldBorderFill || "white",
             fillOpacity: 1,
             fillRule: "nonzero",
             stroke: shieldBorderColour || "#ababab",

@@ -30,7 +30,7 @@ export function createAppTheme() {
         contrastText: '#2b7bb9'
       },
       secondary: {
-        main: '#0d47a1',
+        main: '#2f518bff',
       },
       background: {
         default: '#f5f7fa',

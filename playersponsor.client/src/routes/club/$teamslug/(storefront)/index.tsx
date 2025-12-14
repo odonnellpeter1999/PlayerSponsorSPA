@@ -4,15 +4,25 @@ import HeroImageSection from '../../../../components/HeroImageSection'
 import SponsorshipCard from '../../../../components/SponsorShipCard'
 import SponsorShipPanel from '../../../../components/SponsorShipPanel';
 
-export const Route = createFileRoute('/club/$teamslug/(storefront)/sponsorships')({
-  component: RouteComponent,
+export const Route = createFileRoute('/club/$teamslug/(storefront)/')({
+   beforeLoad: () => {
+    return {
+      bar: true,
+    }
+  },
+  loader: ({ context }) => {
+    console.log('Loader context:', context);
+    return context.bar // true
+  },
+  component: RouteComponent
 })
 
 function RouteComponent() {
 
 const { teamslug } = Route.useParams()
+const test =  Route.useLoaderData()
   
-console.log('Sponsorships Page Loaded' + teamslug);
+console.log('Sponsorships Page Loaded' + teamslug + ' ' + test);
 
   // --- Mock Data ---
   const MOCK_OPPORTUNITIES: SponsorshipOpportunity[] = [
@@ -62,7 +72,7 @@ console.log('Sponsorships Page Loaded' + teamslug);
     <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <Container maxWidth="lg" sx={{ pt: 4, pb: 8 }}>
         {/* Page Title */}
-        <Typography variant="h3" component="h1" gutterBottom align="left" sx={{ mt: 4, mb: 6, fontWeight: "bold" }}>
+        <Typography variant="h3" component="h1"  gutterBottom align="left" sx={{ mt: 4, mb: 6, fontWeight: "bold" }}>
           Support Clan Na Gael
         </Typography>
 

@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from '@tanstack/react-router';
 import Logo from './LogoNavBar';
-import theme from '../theme';
+import { useTheme } from '@mui/material/styles';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
@@ -26,17 +26,19 @@ function ResponsiveAppBar() {
     setOpenNavDrawer(true);
   };
 
+  const theme = useTheme();
+
   const handleCloseNavMenu = () => {
     setOpenNavDrawer(false);
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: 'white', borderBottom: 3, borderColor: theme.palette.primary.main }}>
+    <AppBar position="static" sx={{ bgcolor: 'white', borderBottom: 3, borderColor: theme.palette.secondary.main }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Logo shieldBorderColour={theme.palette.primary.main} shieldBorderFill='white'  />
+          <Logo shieldBorderColour='black' shieldBorderFill={theme.palette.primary.main}  />
           <Typography variant="h4" sx={{ color: theme.palette.primary.main, fontWeight: 'bold', ml: 2 }}>
-            Player Sponsor
+            PlayerSponsor
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -101,6 +103,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
               key={page}
+              color='secondary'
               sx={{ my: 2, display: 'block' }}
               >
               {page}

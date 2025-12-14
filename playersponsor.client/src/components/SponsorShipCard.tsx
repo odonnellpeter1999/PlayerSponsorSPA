@@ -49,7 +49,7 @@ const SponsorshipCard = ({ item }: { item: SponsorshipOpportunity }) => {
         </Typography>
       </CardContent>
       <CardActions sx={{ p: 2, pt: 0, justifyContent: 'center' }}>
-        <Button variant="contained" fullWidth disableElevation sx={{ borderRadius: 2 }}>
+        <Button variant="contained" color="secondary" fullWidth disableElevation sx={{ borderRadius: 2 }}>
           Sponsor Now
         </Button>
       </CardActions>
