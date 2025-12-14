@@ -9,186 +9,247 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as storefrontRouteRouteImport } from './routes/(storefront)/route'
-import { Route as storefrontIndexRouteImport } from './routes/(storefront)/index'
-import { Route as storefrontAboutRouteImport } from './routes/(storefront)/about'
-import { Route as FormsClubSignupRouteImport } from './routes/_forms/club/signup'
-import { Route as FormsClubSigninRouteImport } from './routes/_forms/club/signin'
-import { Route as FormsClubDashboardRouteImport } from './routes/_forms/club/dashboard'
-import { Route as storefrontclubSponsorshipsRouteImport } from './routes/(storefront)/(club)/sponsorships'
+import { Route as publicRouteRouteImport } from './routes/(public)/route'
+import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicAboutRouteImport } from './routes/(public)/about'
+import { Route as ClubTeamslugRouteRouteImport } from './routes/club/$teamslug/route'
+import { Route as ClubTeamslugSignupRouteImport } from './routes/club/$teamslug/signup'
+import { Route as ClubTeamslugSigninRouteImport } from './routes/club/$teamslug/signin'
+import { Route as ClubTeamslugDashboardRouteImport } from './routes/club/$teamslug/dashboard'
+import { Route as ClubTeamslugstorefrontRouteRouteImport } from './routes/club/$teamslug/(storefront)/route'
+import { Route as ClubTeamslugstorefrontSponsorshipsRouteImport } from './routes/club/$teamslug/(storefront)/sponsorships'
 
-const storefrontRouteRoute = storefrontRouteRouteImport.update({
-  id: '/(storefront)',
+const publicRouteRoute = publicRouteRouteImport.update({
+  id: '/(public)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const storefrontIndexRoute = storefrontIndexRouteImport.update({
+const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => storefrontRouteRoute,
+  getParentRoute: () => publicRouteRoute,
 } as any)
-const storefrontAboutRoute = storefrontAboutRouteImport.update({
+const publicAboutRoute = publicAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => storefrontRouteRoute,
+  getParentRoute: () => publicRouteRoute,
 } as any)
-const FormsClubSignupRoute = FormsClubSignupRouteImport.update({
-  id: '/_forms/club/signup',
-  path: '/club/signup',
+const ClubTeamslugRouteRoute = ClubTeamslugRouteRouteImport.update({
+  id: '/club/$teamslug',
+  path: '/club/$teamslug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FormsClubSigninRoute = FormsClubSigninRouteImport.update({
-  id: '/_forms/club/signin',
-  path: '/club/signin',
-  getParentRoute: () => rootRouteImport,
+const ClubTeamslugSignupRoute = ClubTeamslugSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => ClubTeamslugRouteRoute,
 } as any)
-const FormsClubDashboardRoute = FormsClubDashboardRouteImport.update({
-  id: '/_forms/club/dashboard',
-  path: '/club/dashboard',
-  getParentRoute: () => rootRouteImport,
+const ClubTeamslugSigninRoute = ClubTeamslugSigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => ClubTeamslugRouteRoute,
 } as any)
-const storefrontclubSponsorshipsRoute =
-  storefrontclubSponsorshipsRouteImport.update({
-    id: '/(club)/sponsorships',
+const ClubTeamslugDashboardRoute = ClubTeamslugDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ClubTeamslugRouteRoute,
+} as any)
+const ClubTeamslugstorefrontRouteRoute =
+  ClubTeamslugstorefrontRouteRouteImport.update({
+    id: '/(storefront)',
+    getParentRoute: () => ClubTeamslugRouteRoute,
+  } as any)
+const ClubTeamslugstorefrontSponsorshipsRoute =
+  ClubTeamslugstorefrontSponsorshipsRouteImport.update({
+    id: '/sponsorships',
     path: '/sponsorships',
-    getParentRoute: () => storefrontRouteRoute,
+    getParentRoute: () => ClubTeamslugstorefrontRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/about': typeof storefrontAboutRoute
-  '/': typeof storefrontIndexRoute
-  '/sponsorships': typeof storefrontclubSponsorshipsRoute
-  '/club/dashboard': typeof FormsClubDashboardRoute
-  '/club/signin': typeof FormsClubSigninRoute
-  '/club/signup': typeof FormsClubSignupRoute
+  '/club/$teamslug': typeof ClubTeamslugstorefrontRouteRouteWithChildren
+  '/about': typeof publicAboutRoute
+  '/': typeof publicIndexRoute
+  '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
+  '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
+  '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
+  '/club/$teamslug/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
 }
 export interface FileRoutesByTo {
-  '/about': typeof storefrontAboutRoute
-  '/': typeof storefrontIndexRoute
-  '/sponsorships': typeof storefrontclubSponsorshipsRoute
-  '/club/dashboard': typeof FormsClubDashboardRoute
-  '/club/signin': typeof FormsClubSigninRoute
-  '/club/signup': typeof FormsClubSignupRoute
+  '/club/$teamslug': typeof ClubTeamslugstorefrontRouteRouteWithChildren
+  '/about': typeof publicAboutRoute
+  '/': typeof publicIndexRoute
+  '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
+  '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
+  '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
+  '/club/$teamslug/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/(storefront)': typeof storefrontRouteRouteWithChildren
-  '/(storefront)/about': typeof storefrontAboutRoute
-  '/(storefront)/': typeof storefrontIndexRoute
-  '/(storefront)/(club)/sponsorships': typeof storefrontclubSponsorshipsRoute
-  '/_forms/club/dashboard': typeof FormsClubDashboardRoute
-  '/_forms/club/signin': typeof FormsClubSigninRoute
-  '/_forms/club/signup': typeof FormsClubSignupRoute
+  '/(public)': typeof publicRouteRouteWithChildren
+  '/club/$teamslug': typeof ClubTeamslugRouteRouteWithChildren
+  '/(public)/about': typeof publicAboutRoute
+  '/(public)/': typeof publicIndexRoute
+  '/club/$teamslug/(storefront)': typeof ClubTeamslugstorefrontRouteRouteWithChildren
+  '/club/$teamslug/dashboard': typeof ClubTeamslugDashboardRoute
+  '/club/$teamslug/signin': typeof ClubTeamslugSigninRoute
+  '/club/$teamslug/signup': typeof ClubTeamslugSignupRoute
+  '/club/$teamslug/(storefront)/sponsorships': typeof ClubTeamslugstorefrontSponsorshipsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/club/$teamslug'
     | '/about'
     | '/'
-    | '/sponsorships'
-    | '/club/dashboard'
-    | '/club/signin'
-    | '/club/signup'
+    | '/club/$teamslug/dashboard'
+    | '/club/$teamslug/signin'
+    | '/club/$teamslug/signup'
+    | '/club/$teamslug/sponsorships'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/club/$teamslug'
     | '/about'
     | '/'
-    | '/sponsorships'
-    | '/club/dashboard'
-    | '/club/signin'
-    | '/club/signup'
+    | '/club/$teamslug/dashboard'
+    | '/club/$teamslug/signin'
+    | '/club/$teamslug/signup'
+    | '/club/$teamslug/sponsorships'
   id:
     | '__root__'
-    | '/(storefront)'
-    | '/(storefront)/about'
-    | '/(storefront)/'
-    | '/(storefront)/(club)/sponsorships'
-    | '/_forms/club/dashboard'
-    | '/_forms/club/signin'
-    | '/_forms/club/signup'
+    | '/(public)'
+    | '/club/$teamslug'
+    | '/(public)/about'
+    | '/(public)/'
+    | '/club/$teamslug/(storefront)'
+    | '/club/$teamslug/dashboard'
+    | '/club/$teamslug/signin'
+    | '/club/$teamslug/signup'
+    | '/club/$teamslug/(storefront)/sponsorships'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  storefrontRouteRoute: typeof storefrontRouteRouteWithChildren
-  FormsClubDashboardRoute: typeof FormsClubDashboardRoute
-  FormsClubSigninRoute: typeof FormsClubSigninRoute
-  FormsClubSignupRoute: typeof FormsClubSignupRoute
+  publicRouteRoute: typeof publicRouteRouteWithChildren
+  ClubTeamslugRouteRoute: typeof ClubTeamslugRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/(storefront)': {
-      id: '/(storefront)'
+    '/(public)': {
+      id: '/(public)'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof storefrontRouteRouteImport
+      preLoaderRoute: typeof publicRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(storefront)/': {
-      id: '/(storefront)/'
+    '/(public)/': {
+      id: '/(public)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof storefrontIndexRouteImport
-      parentRoute: typeof storefrontRouteRoute
+      preLoaderRoute: typeof publicIndexRouteImport
+      parentRoute: typeof publicRouteRoute
     }
-    '/(storefront)/about': {
-      id: '/(storefront)/about'
+    '/(public)/about': {
+      id: '/(public)/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof storefrontAboutRouteImport
-      parentRoute: typeof storefrontRouteRoute
+      preLoaderRoute: typeof publicAboutRouteImport
+      parentRoute: typeof publicRouteRoute
     }
-    '/_forms/club/signup': {
-      id: '/_forms/club/signup'
-      path: '/club/signup'
-      fullPath: '/club/signup'
-      preLoaderRoute: typeof FormsClubSignupRouteImport
+    '/club/$teamslug': {
+      id: '/club/$teamslug'
+      path: '/club/$teamslug'
+      fullPath: '/club/$teamslug'
+      preLoaderRoute: typeof ClubTeamslugRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_forms/club/signin': {
-      id: '/_forms/club/signin'
-      path: '/club/signin'
-      fullPath: '/club/signin'
-      preLoaderRoute: typeof FormsClubSigninRouteImport
-      parentRoute: typeof rootRouteImport
+    '/club/$teamslug/signup': {
+      id: '/club/$teamslug/signup'
+      path: '/signup'
+      fullPath: '/club/$teamslug/signup'
+      preLoaderRoute: typeof ClubTeamslugSignupRouteImport
+      parentRoute: typeof ClubTeamslugRouteRoute
     }
-    '/_forms/club/dashboard': {
-      id: '/_forms/club/dashboard'
-      path: '/club/dashboard'
-      fullPath: '/club/dashboard'
-      preLoaderRoute: typeof FormsClubDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+    '/club/$teamslug/signin': {
+      id: '/club/$teamslug/signin'
+      path: '/signin'
+      fullPath: '/club/$teamslug/signin'
+      preLoaderRoute: typeof ClubTeamslugSigninRouteImport
+      parentRoute: typeof ClubTeamslugRouteRoute
     }
-    '/(storefront)/(club)/sponsorships': {
-      id: '/(storefront)/(club)/sponsorships'
+    '/club/$teamslug/dashboard': {
+      id: '/club/$teamslug/dashboard'
+      path: '/dashboard'
+      fullPath: '/club/$teamslug/dashboard'
+      preLoaderRoute: typeof ClubTeamslugDashboardRouteImport
+      parentRoute: typeof ClubTeamslugRouteRoute
+    }
+    '/club/$teamslug/(storefront)': {
+      id: '/club/$teamslug/(storefront)'
+      path: ''
+      fullPath: '/club/$teamslug'
+      preLoaderRoute: typeof ClubTeamslugstorefrontRouteRouteImport
+      parentRoute: typeof ClubTeamslugRouteRoute
+    }
+    '/club/$teamslug/(storefront)/sponsorships': {
+      id: '/club/$teamslug/(storefront)/sponsorships'
       path: '/sponsorships'
-      fullPath: '/sponsorships'
-      preLoaderRoute: typeof storefrontclubSponsorshipsRouteImport
-      parentRoute: typeof storefrontRouteRoute
+      fullPath: '/club/$teamslug/sponsorships'
+      preLoaderRoute: typeof ClubTeamslugstorefrontSponsorshipsRouteImport
+      parentRoute: typeof ClubTeamslugstorefrontRouteRoute
     }
   }
 }
 
-interface storefrontRouteRouteChildren {
-  storefrontAboutRoute: typeof storefrontAboutRoute
-  storefrontIndexRoute: typeof storefrontIndexRoute
-  storefrontclubSponsorshipsRoute: typeof storefrontclubSponsorshipsRoute
+interface publicRouteRouteChildren {
+  publicAboutRoute: typeof publicAboutRoute
+  publicIndexRoute: typeof publicIndexRoute
 }
 
-const storefrontRouteRouteChildren: storefrontRouteRouteChildren = {
-  storefrontAboutRoute: storefrontAboutRoute,
-  storefrontIndexRoute: storefrontIndexRoute,
-  storefrontclubSponsorshipsRoute: storefrontclubSponsorshipsRoute,
+const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicAboutRoute: publicAboutRoute,
+  publicIndexRoute: publicIndexRoute,
 }
 
-const storefrontRouteRouteWithChildren = storefrontRouteRoute._addFileChildren(
-  storefrontRouteRouteChildren,
+const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
+  publicRouteRouteChildren,
 )
 
+interface ClubTeamslugstorefrontRouteRouteChildren {
+  ClubTeamslugstorefrontSponsorshipsRoute: typeof ClubTeamslugstorefrontSponsorshipsRoute
+}
+
+const ClubTeamslugstorefrontRouteRouteChildren: ClubTeamslugstorefrontRouteRouteChildren =
+  {
+    ClubTeamslugstorefrontSponsorshipsRoute:
+      ClubTeamslugstorefrontSponsorshipsRoute,
+  }
+
+const ClubTeamslugstorefrontRouteRouteWithChildren =
+  ClubTeamslugstorefrontRouteRoute._addFileChildren(
+    ClubTeamslugstorefrontRouteRouteChildren,
+  )
+
+interface ClubTeamslugRouteRouteChildren {
+  ClubTeamslugstorefrontRouteRoute: typeof ClubTeamslugstorefrontRouteRouteWithChildren
+  ClubTeamslugDashboardRoute: typeof ClubTeamslugDashboardRoute
+  ClubTeamslugSigninRoute: typeof ClubTeamslugSigninRoute
+  ClubTeamslugSignupRoute: typeof ClubTeamslugSignupRoute
+}
+
+const ClubTeamslugRouteRouteChildren: ClubTeamslugRouteRouteChildren = {
+  ClubTeamslugstorefrontRouteRoute:
+    ClubTeamslugstorefrontRouteRouteWithChildren,
+  ClubTeamslugDashboardRoute: ClubTeamslugDashboardRoute,
+  ClubTeamslugSigninRoute: ClubTeamslugSigninRoute,
+  ClubTeamslugSignupRoute: ClubTeamslugSignupRoute,
+}
+
+const ClubTeamslugRouteRouteWithChildren =
+  ClubTeamslugRouteRoute._addFileChildren(ClubTeamslugRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  storefrontRouteRoute: storefrontRouteRouteWithChildren,
-  FormsClubDashboardRoute: FormsClubDashboardRoute,
-  FormsClubSigninRoute: FormsClubSigninRoute,
-  FormsClubSignupRoute: FormsClubSignupRoute,
+  publicRouteRoute: publicRouteRouteWithChildren,
+  ClubTeamslugRouteRoute: ClubTeamslugRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

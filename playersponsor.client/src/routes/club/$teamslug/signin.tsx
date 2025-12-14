@@ -114,6 +114,6 @@ const SignIn = () => {
   );
 };
 
-export const Route = createFileRoute('/_forms/club/signin')({
+export const Route = createFileRoute('/club/$teamslug/signin')({
   component: SignIn,
 })

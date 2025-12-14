@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from '@tanstack/react-router';
 import Logo from './LogoNavBar';
+import theme from '../theme';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
@@ -30,10 +31,13 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ bgcolor: 'white', borderBottom: 3, borderColor: theme.palette.primary.main }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Logo color='white'/>
+          <Logo shieldBorderColour={theme.palette.primary.main} shieldBorderFill='white'  />
+          <Typography variant="h4" sx={{ color: theme.palette.primary.main, fontWeight: 'bold', ml: 2 }}>
+            Player Sponsor
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -41,7 +45,7 @@ function ResponsiveAppBar() {
               aria-controls="nav-drawer"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="primary"
             >
               <MenuIcon />
             </IconButton>
@@ -93,17 +97,16 @@ function ResponsiveAppBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
             {pages.map((page) => (
               <Button
-                key={page}
-                
-                sx={{ my: 2, color: 'white', display: 'block' }}
+              key={page}
+              sx={{ my: 2, display: 'block' }}
               >
-                {page}
+              {page}
               </Button>
             ))}
-          </Box>
+            </Box>
         </Toolbar>
       </Container>
     </AppBar>

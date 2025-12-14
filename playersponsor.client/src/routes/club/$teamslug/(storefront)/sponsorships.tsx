@@ -1,14 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Box, Container, Typography, Grid, Divider, TextField, Button } from '@mui/material'
-import HeroImageSection from '../../../components/HeroImageSection'
-import SponsorshipCard from '../../../components/SponsorShipCard'
-import SponsorShipPanel from '../../../components/SponsorShipPanel';
+import { Box, Container, Typography, Grid, Divider} from '@mui/material'
+import HeroImageSection from '../../../../components/HeroImageSection'
+import SponsorshipCard from '../../../../components/SponsorShipCard'
+import SponsorShipPanel from '../../../../components/SponsorShipPanel';
 
-export const Route = createFileRoute('/(storefront)/(club)/sponsorships')({
+export const Route = createFileRoute('/club/$teamslug/(storefront)/sponsorships')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+
+const { teamslug } = Route.useParams()
+  
+console.log('Sponsorships Page Loaded' + teamslug);
 
   // --- Mock Data ---
   const MOCK_OPPORTUNITIES: SponsorshipOpportunity[] = [

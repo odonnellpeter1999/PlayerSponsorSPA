@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import CopyrightIcon from '@mui/icons-material/Copyright';
 
-export const Route = createFileRoute('/(storefront)')({
+export const Route = createFileRoute('/(public)')({
   component: RouteComponent,
 })
 

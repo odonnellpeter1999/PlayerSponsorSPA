@@ -9,7 +9,7 @@ import {
     CardActions,
 } from '@mui/material';
 
-export const Route = createFileRoute('/(storefront)/')({
+export const Route = createFileRoute('/(public)/')({
     component: HomePage,
 })
 
