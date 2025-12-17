@@ -1,8 +1,11 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material";
-import { SponsorshipOpportunity } from "./Carousel";
 import SponsorShipIcon from "./SponsorShipIcon";
+import { Product } from "../types/club";
 
-const SponsorshipCard = ({ item }: { item: SponsorshipOpportunity }) => {
+const SponsorshipCard = ( {product} : { product: Product }) => {
+
+  console.log(product);
+
   return (
     <Card
       elevation={3}
@@ -28,24 +31,28 @@ const SponsorshipCard = ({ item }: { item: SponsorshipOpportunity }) => {
           color: 'primary.contrastText'
         }}
       >
-      <SponsorShipIcon word={item.iconWord} />
+      <SponsorShipIcon word={product?.iconWord} />
       </Box>
       <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
-        <Chip
-          label={item.category}
-          size="small"
-          color="primary"
-          variant="outlined"
-          sx={{ mb: 2 }}
-        />
+
+        {product?.tags && product.tags.map(tag => (
+          <Chip
+            key={tag}
+            label={tag}
+            size="small"
+            color="primary"
+            variant="outlined"
+            sx={{ mb: 2 }}
+          />
+        ))}
         <Typography gutterBottom variant="h6" component="h3" fontWeight="bold">
-          {item.title}
+          {product?.title}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {item.description}
+          {product?.description}
         </Typography>
         <Typography variant="h5" color="primary.main" fontWeight="800">
-          {item.price}
+          {product?.price}
         </Typography>
       </CardContent>
       <CardActions sx={{ p: 2, pt: 0, justifyContent: 'center' }}>

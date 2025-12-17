@@ -20,7 +20,7 @@ const ContactForm = () => {
           <TextField fullWidth label="Your Email" variant="outlined" type="email" />
         </Grid>
         <Grid size={{ xs: 12 }}>
-          <TextField87
+          <TextField
             fullWidth
             label="Your Message"
             variant="outlined"

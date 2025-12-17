@@ -1,6 +1,5 @@
 import {
   Box,
-  Card,
   CardContent,
   Typography,
   Button,
@@ -18,7 +17,7 @@ import {
 } from '@mui/icons-material';
 
 
-interface SponsorShipPanelProps {
+interface ContactUsPanelProps {
   email?: string; // Optional string
   emailSubject?: string; // Optional string
   socialLinks?: { name: string; url: string }[]; // Optional array of objects
@@ -48,11 +47,11 @@ const socialIconMap: Record<string, React.ReactElement> = {
  * @param {string} [props.emailSubject='Inquiry from Website'] - The default subject for the mailto link.
  * @param {SocialLink[]} props.socialLinks - An array of social link objects.
  */
-const SponsorShipPanel = ({
+const ContactUsPanel = ({
   email = '',
   emailSubject = 'Inquiry from Website',
   socialLinks = [] // Default to an empty array if no links are provided
-}: SponsorShipPanelProps) => {
+}: ContactUsPanelProps) => {
   // Function to handle the click and open the default mail client
   const handleEmailClick = () => {
     if (email) {
@@ -137,4 +136,4 @@ const SponsorShipPanel = ({
   );
 };
 
-export default SponsorShipPanel;
+export default ContactUsPanel;

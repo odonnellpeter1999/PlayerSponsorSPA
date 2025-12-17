@@ -83,7 +83,7 @@ const Carousel = ({ items, title }: CarouselProps) => {
              <Grid container spacing={3} sx={{ px: 2 }}>
               {currentItems.map((item) => (
                 <Grid size={{xs:12, sm:6, md:4}} key={item.id}>
-                  <SponsorshipCard item={item} />
+                  <SponsorshipCard product={item} />
                 </Grid>
               ))}
               

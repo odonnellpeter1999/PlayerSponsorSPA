@@ -13,7 +13,7 @@ export const Route = createFileRoute('/club/$teamslug/(storefront)')({
 function RouteComponent() {
   return (
     <>
-      <ResponsiveAppBar />
+      <ResponsiveAppBar links={[{ label: 'About', href: '/about' }, { label: 'Home', href: '/' }]} />
       <Outlet />
       <AppBar position="static" color="primary" component="footer" sx={{ top: 'auto', bottom: 0, mt: 4 }}>
         <Container maxWidth="lg">

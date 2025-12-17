@@ -10,20 +10,25 @@ import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 
 interface SponsorShipIconProps {
-  word: string;
+  word?: string;
 }
 
+const iconMap: Record<string, React.ElementType<SvgIconProps>> = {
+  soccerball: SportsSoccerIcon,
+  gealicball: SportsVolleyballIcon,
+  trophy: EmojiEventsIcon,
+  pint: SportsBarIcon,
+  sliotar: SportsBaseballIcon,
+  hydration: LocalDrinkIcon,
+  pints: SportsBarIcon,
+  playersponsor: DirectionsRunIcon,
+};
+
 const SponsorShipIcon: React.FC<SponsorShipIconProps> = ({ word }) => {
-  const iconMap: Record<string, React.ElementType<SvgIconProps>> = {
-    soccerball: SportsSoccerIcon,
-    gealicball: SportsVolleyballIcon,
-    trophy: EmojiEventsIcon,
-    pint: SportsBarIcon,
-    sliotar: SportsBaseballIcon,
-    hydration: LocalDrinkIcon,
-    pints: SportsBarIcon,
-    playersponsor: DirectionsRunIcon,
-  };
+
+  if (!word) {
+    return <ErrorOutlineIcon fontSize="large" />;
+  }
 
   const IconComponent = iconMap[word.toLowerCase()] || ErrorOutlineIcon;
 

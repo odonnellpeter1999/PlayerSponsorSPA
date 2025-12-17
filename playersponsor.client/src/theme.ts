@@ -17,7 +17,7 @@ declare module '@mui/material/AppBar' {
   }
 }
 
-export function createAppTheme() {
+export function createDefaultAppTheme() {
 
   const base: ThemeOptions = {
     palette: {
@@ -34,7 +34,7 @@ export function createAppTheme() {
       },
       background: {
         default: '#f5f7fa',
-        paper:  '#ffffff'
+        paper: '#ffffff'
       }
     },
     typography: {
@@ -74,5 +74,59 @@ export function createAppTheme() {
   return createTheme(base)
 }
 
-// Default export: light theme without logo so existing imports work immediately.
-export default createAppTheme()
+export function createClubTheme(primaryColor: string, secondaryColor: string) {
+
+  var base: ThemeOptions = {
+    palette: {
+      primary: {
+        main: primaryColor,
+        contrastText: '#ffffff'
+      },
+      primaryInverted: {
+        main: '#ffffff',
+        contrastText: '#ffffffff'
+      },
+      secondary: {
+        main: secondaryColor,
+      },
+      background: {
+        default: '#f5f7fa',
+        paper: '#ffffff'
+      }
+    },
+    typography: {
+      fontFamily: ['Inter', 'Roboto', 'system-ui', 'Helvetica', 'Arial', 'sans-serif'].join(','),
+      h1: { fontWeight: 700 },
+      h2: { fontWeight: 600 }
+    },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          // Use the theme background and, when provided, include the logo
+          body: {
+            backgroundColor: '#f5f7fa',
+            color: '#0f1724',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            // If a logo URL is provided, place it in the top-right as a subtle
+            // branding watermark. Consumers can override this via GlobalStyles
+            // or the theme component overrides if they prefer.
+          },
+          '*, *::before, *::after': {
+            boxSizing: 'border-box',
+          },
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          containedPrimary: {
+            boxShadow: 'none',
+            textTransform: 'none',
+          },
+        },
+      },
+    }
+  }
+
+  return createTheme(base);
+}
