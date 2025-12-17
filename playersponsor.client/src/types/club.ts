@@ -5,7 +5,7 @@ export interface Club {
   primaryColor: string; // Primary color in hex format
   secondaryColor: string; // Secondary color in hex format
   socialMedia: {
-    [key: string]: string | undefined; // Additional social media links
+    [key: string]: string; // Additional social media links
   };
 }
 
@@ -36,6 +36,8 @@ export const sampleClub: Club =
     secondaryColor: "#000000ff",
     socialMedia: {
       twitter: "https://twitter.com/sunsetfc",
-      facebook: "https://facebook.com/sunsetfc"
+      facebook: "https://facebook.com/sunsetfc",
+      instagram: "https://instagram.com/sunsetfc",
+      linkedin: "https://linkedin.com/company/sunsetfc"
     }
   };

@@ -2,7 +2,7 @@ import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@
 import SponsorShipIcon from "./SponsorShipIcon";
 import { Product } from "../types/club";
 
-const SponsorshipCard = ( {product} : { product: Product }) => {
+const SponsorshipCard = ({ product }: { product: Product }) => {
 
   console.log(product);
 
@@ -31,10 +31,9 @@ const SponsorshipCard = ( {product} : { product: Product }) => {
           color: 'primary.contrastText'
         }}
       >
-      <SponsorShipIcon word={product?.iconWord} />
+        <SponsorShipIcon word={product?.iconWord} />
       </Box>
       <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
-
         {product?.tags && product.tags.map(tag => (
           <Chip
             key={tag}
@@ -42,7 +41,7 @@ const SponsorshipCard = ( {product} : { product: Product }) => {
             size="small"
             color="primary"
             variant="outlined"
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, mx: 0.5 }}
           />
         ))}
         <Typography gutterBottom variant="h6" component="h3" fontWeight="bold">

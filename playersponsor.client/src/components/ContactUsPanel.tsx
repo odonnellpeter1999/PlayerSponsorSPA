@@ -20,7 +20,7 @@ import {
 interface ContactUsPanelProps {
   email?: string; // Optional string
   emailSubject?: string; // Optional string
-  socialLinks?: { name: string; url: string }[]; // Optional array of objects
+  socialLinks?: { [key: string]: string }; // Optional array of objects
 }
 
 // --- Define Prop Types for clarity (Optional, but recommended in TypeScript or with prop-types) ---
@@ -50,7 +50,7 @@ const socialIconMap: Record<string, React.ReactElement> = {
 const ContactUsPanel = ({
   email = '',
   emailSubject = 'Inquiry from Website',
-  socialLinks = [] // Default to an empty array if no links are provided
+  socialLinks = {} // Default to an empty object if no links are provided
 }: ContactUsPanelProps) => {
   // Function to handle the click and open the default mail client
   const handleEmailClick = () => {
@@ -98,28 +98,28 @@ const ContactUsPanel = ({
         )}
 
         {/* --- Social Media Links (Only render if links are provided) --- */}
-        {socialLinks.length > 0 && (
+        {Object.keys(socialLinks).length > 0 && (
           <>
             <Divider sx={{ mb: 2 }} />
             <Typography variant="subtitle1" component="div" sx={{ mb: 1 }}>
               Connect with us:
             </Typography>
             <Stack direction="row" spacing={1} justifyContent="center">
-              {socialLinks.map((social) => {
+              {Object.entries(socialLinks).map(([key, url]) => {
                 // Prioritize icon provided in the social link object, otherwise try to use the map
-                const iconToUse = socialIconMap[social.name.toLowerCase()];
+                const iconToUse = socialIconMap[key.toLowerCase()];
 
                 if (!iconToUse) {
-                  console.warn(`No icon found for social platform: ${social.name}`);
+                  console.warn(`No icon found for social platform: ${key}`);
                   return null;
                 }
 
                 return (
                   <IconButton
-                    key={social.name}
-                    aria-label={social.name}
+                    key={key}
+                    aria-label={key}
                     color="secondary"
-                    href={social.url}
+                    href={url}
                     target="_blank"
                     rel="noopener noreferrer"
                     size="large"

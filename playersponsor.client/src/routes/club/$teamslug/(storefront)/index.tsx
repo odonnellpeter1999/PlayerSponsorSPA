@@ -5,11 +5,6 @@ import SponsorshipCard from '../../../../components/SponsorShipCard'
 import ContactUsPanel from '../../../../components/ContactUsPanel';
 
 export const Route = createFileRoute('/club/$teamslug/(storefront)/')({
-  beforeLoad: () => {
-    return {
-      bar: true,
-    }
-  },
   loader: ({ context }) => {
     console.log('Loader context:', context);
     return context // true
@@ -23,17 +18,17 @@ function RouteComponent() {
 
   return (
     <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh' }}>
-      <Container  sx={{ pt: 4, pb: 8 }}>
+      <Container  sx={{ pt: 4, pb: 4 }}>
         {/* Page Title */}
-        <Typography variant="h3" component="h1" gutterBottom align="left" sx={{ mt: 4, mb: 6, fontWeight: "bold" }}>
-          Support Clan Na Gael
+        <Typography variant="h3" component="h1" gutterBottom align="left" sx={{ mt: 4, mb: 4, fontWeight: "bold" }}>
+          Support {clubData.name}
         </Typography>
 
         <HeroImageSection />
 
         {/* Sponsorship Products Section (3-column grid for desktop, 1-column for mobile) */}
-        <Grid sx={{ mb: 8 }}>
-          <Box sx={{ bgcolor: '#f5f7fa', minHeight: '100vh' }}>
+        <Grid sx={{ mb: 4 }}>
+          <Box sx={{ bgcolor: '#f5f7fa' }}>
             {/* Main Content Area */}
             <Box sx={{ bgcolor: 'white', borderRadius: 4, p: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
               <Typography variant="h4" sx={{ mt: 2, mb: 3, fontWeight: "bold" }} component="h2" fontWeight="bold" color="text.primary">
@@ -50,11 +45,11 @@ function RouteComponent() {
           </Box >
         </Grid>
 
-        {/* --- Contact Form Section --- */}
         <Divider sx={{ my: 4 }} />
 
+        {/* --- Contact Form Section --- */}
         <Box sx={{ bgcolor: 'white', borderRadius: 4, p: 3 }} >
-          <ContactUsPanel email='odonnellpeter1999@gmail.com' socialLinks={[{ name: 'facebook', url: 'https://facebook.com/yourprofile' }, { name: 'instagram', url: 'https://facebook.com/yourprofile' }, { name: 'twitter', url: 'https://facebook.com/yourprofile' }]} />
+          <ContactUsPanel email={clubData.email} socialLinks={clubData.socialMedia} />
         </Box>
       </Container>
     </Box>
