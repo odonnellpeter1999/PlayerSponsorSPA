@@ -7,6 +7,7 @@ export interface Club {
   socialMedia: {
     [key: string]: string; // Additional social media links
   };
+  heroImageId: string; // Image ID for the hero image
 }
 
 export interface Product {
@@ -20,7 +21,7 @@ export interface Product {
  
 export const sampleClub: Club = 
   {
-    name: "Sunset FC",
+    name: "Clann Na nGael",
     products: [
       {
         id: "1",
@@ -28,12 +29,13 @@ export const sampleClub: Club =
         price: "$50",
         description: "Official team jersey with customizable name and number.",
         iconWord: "soccerball", // Updated to match icon key
-        tags: ["apparel", "team"]
+        tags: ["Apparel", "Team"]
       }
     ],
     email: "contact@sunsetfc.com",
     primaryColor: "#348c34",
     secondaryColor: "#000000ff",
+    heroImageId: "Clan_jwmjlj",
     socialMedia: {
       twitter: "https://twitter.com/sunsetfc",
       facebook: "https://facebook.com/sunsetfc",

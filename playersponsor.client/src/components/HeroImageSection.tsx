@@ -1,6 +1,13 @@
 import { Box, Card, CardMedia } from '@mui/material';
+import { cloudinary } from "../utils/images/cloudinary";
 
-const HeroImageSection = () => {
+interface HeroImageSectionProps {
+  imageId: string;
+}
+
+const HeroImageSection = ({ imageId }: HeroImageSectionProps) => {
+  const heroImageUrl = cloudinary.getRawImageUrl(imageId);
+
   return (
     <Box sx={{ mb: 6, textAlign: 'center' }}>
       {/* The Hero Image Card */}
@@ -8,7 +15,7 @@ const HeroImageSection = () => {
         <CardMedia
           component="img"
           height="300" // Fixed height for a consistent look
-          image="../Clan.png" // Placeholder image
+          image={heroImageUrl} // Placeholder image
           alt="Club Stadium or Team"
           sx={{ objectFit: 'cover', width: '100%' }} // Ensure it covers the area and is responsive
         />

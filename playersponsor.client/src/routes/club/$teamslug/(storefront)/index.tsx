@@ -24,7 +24,7 @@ function RouteComponent() {
           Support {clubData.name}
         </Typography>
 
-        <HeroImageSection />
+        <HeroImageSection imageId={clubData.heroImageId} />
 
         {/* Sponsorship Products Section (3-column grid for desktop, 1-column for mobile) */}
         <Grid sx={{ mb: 4 }}>
