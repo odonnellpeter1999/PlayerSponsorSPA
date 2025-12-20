@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using PlayerSponsor.Server.Auth;
+using PlayerSponsor.UnitTests.Common;
 
 namespace PlayerSponsor.UnitTests.Auth
 {
-    internal class ClubAdminClaimsPrincipalFactoryTests : AuthenticationTestBase
+    internal class ClubAdminClaimsPrincipalFactoryTests : TestBase
     {
         private ClubAdminClaimsPrincipalFactory _sut;
 

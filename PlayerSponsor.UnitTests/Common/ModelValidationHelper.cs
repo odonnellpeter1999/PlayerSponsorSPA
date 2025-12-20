@@ -2,7 +2,7 @@
 
 namespace PlayerSponsor.UnitTests.Common;
 
-internal class ModelValidationHelper
+public class ModelValidationHelper
 {
     public static IList<ValidationResult> ValidateModel(object model)
     {

@@ -2,6 +2,7 @@
 using PlayerSponsor.Server.Common;
 using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Repositories;
+using PlayerSponsor.Server.Services.Commands;
 using PlayerSponsor.Server.Services.DTOs;
 
 namespace PlayerSponsor.Server.Services.ClubService;
@@ -34,12 +35,23 @@ public class ClubService(IClubRepository clubRepository, IMapper mapper, IClubAd
         return ResultT<ClubDto>.Success(clubDto);
     }
 
-    public async Task<ResultT<Club>> CreateClub(Club newClub)
+    public async Task<ResultT<ClubDto>> GetClubBySlugAsync(string slug)
     {
-        newClub.Logo = "";
-        newClub.PlayerKey = Guid.NewGuid().ToString();
+        var club = await _clubRepository.GetBySlugAsync(slug);
 
-        var club = await _clubRepository.AddAsync(newClub);
+        if (club is null)
+            return ClubServiceError.NotFound(slug.ToString());
+
+        var clubDto = _mapper.Map<ClubDto>(club);
+
+        return ResultT<ClubDto>.Success(clubDto);
+    }
+
+    public async Task<ResultT<ClubDto>> CreateClub(CreateClubCommand newClub)
+    {
+        var club = _mapper.Map<Club>(newClub);
+
+        club = await _clubRepository.AddAsync(club);
 
         if (club == null)
         {
@@ -47,10 +59,12 @@ public class ClubService(IClubRepository clubRepository, IMapper mapper, IClubAd
             return ClubServiceError.CreateFailure;
         }
 
-        return ResultT<Club>.Success(club);
+        var clubResult = _mapper.Map<ClubDto>(club);
+
+        return ResultT<ClubDto>.Success(clubResult);
     }
 
-    public async Task<Result> UpdateClubAsync(Club updatedClub)
+    public async Task<Result> UpdateClubDetails(UpdateClubDetailsCommand updatedClub)
     {
         var club = await _clubRepository.GetByIdAsync(updatedClub.Id);
 
@@ -60,17 +74,11 @@ public class ClubService(IClubRepository clubRepository, IMapper mapper, IClubAd
             return ClubServiceError.UpdateFailure;
         }
 
-        if (updatedClub.PaymentDetails != null)
-            club.PaymentDetails = updatedClub.PaymentDetails;
-
         if (updatedClub.Name != null)
             club.Name = updatedClub.Name;
 
-        if (updatedClub.Bio != null)
-            club.Bio = updatedClub.Bio;
-
-        if (updatedClub.Logo != null)
-            club.Logo = updatedClub.Logo;
+        if (updatedClub.Description != null)
+            club.Description = updatedClub.Description;
 
         var isSuccess = await _clubRepository.UpdateAsync(club);
 

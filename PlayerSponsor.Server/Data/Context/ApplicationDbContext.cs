@@ -10,6 +10,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<Club> Clubs { get; set; }
+    public DbSet<Product> Products { get; set; }
     public DbSet<ClubAdmin> Admins { get; set; }
     public DbSet<Team> Teams { get; set; }
     public DbSet<Player> Players { get; set; }
@@ -26,30 +27,15 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         .HasForeignKey("ClubId")
         .OnDelete(DeleteBehavior.Cascade);
 
+        // Separate index configuration
         modelBuilder.Entity<Club>()
-            .HasMany(c => c.Teams)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Team>()
-            .HasMany(t => t.Players)
-        .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasIndex(c => c.Slug)
+            .IsUnique();
 
         // Optional: Configure the User navigation property if needed
         modelBuilder.Entity<ClubAdmin>()
             .HasOne(ca => ca.User)
             .WithMany() // or specify the navigation property on ApplicationUser
             .HasForeignKey("UserId"); // Assuming there's a UserId property
-
-        modelBuilder.Entity<Player>()
-            .HasOne(p => p.AwaySponsor)
-        .WithMany()
-            .HasForeignKey("AwaySponsorId");
-
-        modelBuilder.Entity<Player>()
-            .HasOne(p => p.HomeSponsor)
-            .WithMany()
-            .HasForeignKey("HomeSponsorId");
     }
 }

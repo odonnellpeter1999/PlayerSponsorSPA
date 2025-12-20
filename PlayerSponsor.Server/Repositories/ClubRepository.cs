@@ -8,12 +8,9 @@ public class ClubRepository : Repository<Club>, IClubRepository
 {
     public ClubRepository(ApplicationDbContext context) : base(context) { }
 
-    public async Task<Club> GetClubWithTeamsAndPlayersAsync(int clubId)
+    public async Task<Club?> GetBySlugAsync(string slug)
     {
-        return await _context.Clubs
-            .Include(c => c.Teams)
-                .ThenInclude(t => t.Players)
-            .FirstOrDefaultAsync(c => c.Id == clubId);
-    } 
+        return await _dbSet.FirstOrDefaultAsync(c => c.Slug == slug);
+    }
 }
 

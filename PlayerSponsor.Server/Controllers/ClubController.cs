@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PlayerSponsor.Server.Common;
 using PlayerSponsor.Server.Controllers.Requests;
 using PlayerSponsor.Server.Controllers.Responses;
-using PlayerSponsor.Server.Models;
-using PlayerSponsor.Server.Services;
+using PlayerSponsor.Server.Services.AccountService;
 using PlayerSponsor.Server.Services.ClubService;
-using PlayerSponsor.Server.Services.DTOs;
+using PlayerSponsor.Server.Services.Commands;
 
 namespace PlayerSponsor.Server.Controllers;
 
@@ -38,7 +36,6 @@ public class ClubController : BaseController
     }
 
     [HttpGet("{id}")]
-    [Authorize("ClubAdminPolicy")]
     public async Task<IActionResult> GetClubById(int id)
     {
         var result = await _clubService.GetClubByIdAsync(id);
@@ -48,8 +45,11 @@ public class ClubController : BaseController
 
         return Ok(result.Value);
     }
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CreateClubRequest clubRequest)
+
+    // For Now Disabled in MVP - Club Registration,Updating and Deletion will be handled internally
+
+    //[HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] CreateClubRequest createClubRequest)
     {
         if (!ModelState.IsValid)
         {
@@ -57,19 +57,19 @@ public class ClubController : BaseController
         }
 
         // Create the club
-        var newClub = _mapper.Map<Club>(clubRequest);
+        var createClubCommand = _mapper.Map<CreateClubCommand>(createClubRequest);
 
-        var createClubResult = await _clubService.CreateClub(newClub);
+        var createClubResult = await _clubService.CreateClub(createClubCommand);
 
         if (!createClubResult.IsSuccess)
             return Problem(createClubResult.Error!);
 
         // Create the admin account
-        var newUser = _mapper.Map<NewApplicationUser>(clubRequest);
+        var createNewUserCommand = _mapper.Map<CreateUserCommand>(createClubRequest);
 
-        newUser.ClubId = createClubResult.Value.Id;
+        createNewUserCommand.ClubId = createClubResult.Value.Id;
 
-        var registerResult = await _accountService.RegisterUserAsync(newUser);
+        var registerResult = await _accountService.RegisterUserAsync(createNewUserCommand);
 
         if (!registerResult.IsSuccess)
         {
@@ -78,17 +78,17 @@ public class ClubController : BaseController
             return Problem(registerResult.Error!);
         }
 
-        return Ok(new CreateClubResponse() {ClubId = createClubResult.Value.Id.ToString() });
+        return Ok(new CreateClubResponse() { ClubId = createClubResult.Value.Id.ToString() });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateClub(int id, [FromBody] UpdateClubRequest clubDto)
+    //[HttpPut("{id}")]
+    public async Task<IActionResult> UpdateClub(int id, [FromBody] UpdateClubDetailsRequest updateClubRequest)
     {
-        var club = _mapper.Map<Club>(clubDto);
+        var updateClubDetailsCommand = _mapper.Map<UpdateClubDetailsCommand>(updateClubRequest);
 
-        club.Id = id;
+        updateClubDetailsCommand.Id = id;
 
-        var result = await _clubService.UpdateClubAsync(club);
+        var result = await _clubService.UpdateClubDetails(updateClubDetailsCommand);
 
         if (!result.IsSuccess)
             return Problem(result.Error!);
@@ -96,7 +96,7 @@ public class ClubController : BaseController
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    //[HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClub(int id)
     {
         var result = await _clubService.DeleteClubAsync(id);

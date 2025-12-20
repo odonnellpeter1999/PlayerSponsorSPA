@@ -9,15 +9,15 @@ using PlayerSponsor.Server.Controllers.Requests;
 using PlayerSponsor.Server.Controllers.Responses;
 using PlayerSponsor.Server.Mappers;
 using PlayerSponsor.Server.Repositories;
-using PlayerSponsor.Server.Services;
+using PlayerSponsor.Server.Services.AccountService;
 using PlayerSponsor.Server.Services.ClubService;
 using PlayerSponsor.Server.Services.DTOs;
 using PlayerSponsor.UnitTests.Common;
 using System.Security.Claims;
 
-namespace PlayerSponsor.UnitTests;
+namespace PlayerSponsor.UnitTests.Controllers;
 
-public class ClubControllerTests : AuthenticationTestBase
+public class ClubControllerTests : TestBase
 {
     private ClubService _clubService;
     private AccountService _accountService;
@@ -42,8 +42,7 @@ public class ClubControllerTests : AuthenticationTestBase
 
         _accountService = new AccountService(
             userManager,
-            _clubService,
-            signInManager
+            _clubService
         );
 
         _controller = new ClubController(_clubService, mapper, _accountService);
@@ -61,7 +60,7 @@ public class ClubControllerTests : AuthenticationTestBase
         var result = await _controller.GetAllClubs();
 
         // Assert
-        var resultObject = GetValueFromActionResult<IEnumerable<ClubDto>>(result);
+        var resultObject = AssertionHelper.GetValueFromActionResult<IEnumerable<ClubDto>>(result);
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         Assert.That(resultObject, Is.Not.Null);
         Assert.That(resultObject.Any(c => c.Name == testClub.Name), Is.True);
@@ -71,7 +70,7 @@ public class ClubControllerTests : AuthenticationTestBase
     public async Task GetClubById_ClubExists_ReturnsOkResult_WithClub()
     {
         // Arrange
-        var testClub = CreateTestClub();
+        var testClub = CreateTestClub(addProducts: true);
         identityDbContext.Clubs.Add(testClub);
         await identityDbContext.SaveChangesAsync();
 
@@ -79,10 +78,11 @@ public class ClubControllerTests : AuthenticationTestBase
         var result = await _controller.GetClubById(testClub.Id);
 
         // Assert
-        var resultObject = GetValueFromActionResult<ClubDto>(result);
+        var resultObject = AssertionHelper.GetValueFromActionResult<ClubDto>(result);
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         Assert.That(resultObject, Is.Not.Null);
         Assert.That(resultObject.Name, Is.EqualTo(testClub.Name));
+        Assert.That(resultObject.Products, Is.Not.Empty);
     }
 
     [Test]
@@ -92,7 +92,7 @@ public class ClubControllerTests : AuthenticationTestBase
         var result = await _controller.GetClubById(999);
 
         // Assert
-        var resultObject = GetValueFromActionResult<ProblemDetails>(result);
+        var resultObject = AssertionHelper.GetValueFromActionResult<ProblemDetails>(result);
         Assert.That(resultObject, Is.InstanceOf<ProblemDetails>());
     }
 
@@ -109,13 +109,16 @@ public class ClubControllerTests : AuthenticationTestBase
                 ConfirmPassword = "Testauto123!",
                 Email = "admin@gmail.com",
                 Password = "Testauto123!",
-
             },
             ClubDetails = new ClubDetails
             {
                 Name = "Test Club",
                 Description = "Test Description",
-                InteracEmail = "test@gmail.com"
+                Email = "test@gmail.com",
+                Slug = "test-club",
+                PrimaryColour = "#FFFFFF",
+                SecondaryColour = "#000000",
+                HeroImageId = "hero-image-id"
             }
         };
 
@@ -123,7 +126,7 @@ public class ClubControllerTests : AuthenticationTestBase
         var result = await _controller.Register(createRequest);
 
         // Assert
-        var resultObject = GetValueFromActionResult<CreateClubResponse>(result);
+        var resultObject = AssertionHelper.GetValueFromActionResult<CreateClubResponse>(result);
         Assert.That(resultObject, Is.Not.Null);
         Assert.That(resultObject.ClubId, Is.Not.Null);
     }
@@ -148,7 +151,7 @@ public class ClubControllerTests : AuthenticationTestBase
             {
                 Name = "Test Club",
                 Description = "Test Description",
-                InteracEmail = "invalid Email" // Invalid email format
+                Email = "invalid Email" // Invalid email format
             }
         };
 
@@ -156,11 +159,8 @@ public class ClubControllerTests : AuthenticationTestBase
         var result = await _controller.Register(createRequest);
 
         // Assert
-        var resultObject = GetValueFromActionResult<ProblemDetails>(result);
-        Assert.That(resultObject, Is.Not.Null);
-        Assert.That(resultObject.Detail, Is.EqualTo("Club.PaymentDetails"));
+        AssertionHelper.AssertModelStateError(result, "Club.PaymentDetails", "Payment details are invalid.");
     }
-
 
     [Test]
     public async Task UpdateClub_ValidRequest_ReturnsNoContentResult()
@@ -170,7 +170,7 @@ public class ClubControllerTests : AuthenticationTestBase
         identityDbContext.Clubs.Add(testClub);
         await identityDbContext.SaveChangesAsync();
 
-        var updateRequest = new UpdateClubRequest { Name = "Updated Club", Logo = "UpdatedLogo", Bio = "UpdatedBio", PaymentDetails = "UpdatedDetails" };
+        var updateRequest = new UpdateClubDetailsRequest { Name = "Updated Club", Email = "test@Gmail.com" };
 
         // Act
         var result = await _controller.UpdateClub(testClub.Id, updateRequest);
@@ -222,21 +222,11 @@ public class ClubControllerTests : AuthenticationTestBase
             {
                 Name = "Test Club",
                 Description = "Test Description",
-                InteracEmail = "invalid Email" // Invalid email format
+                Email = "invalid Email" // Invalid email format
             }
         };
 
         var validationResult = ModelValidationHelper.ValidateModel(model.AdminAccountDetails);
         Assert.That(validationResult, Is.Empty);
-    }
-
-    private T GetValueFromActionResult<T>(IActionResult actionResult)
-    {
-        if (actionResult is ObjectResult objectResult)
-        {
-            return (T)objectResult.Value;
-        }
-
-        throw new InvalidOperationException("The IActionResult does not contain a value of the expected type.");
     }
 }

@@ -6,7 +6,7 @@ namespace PlayerSponsor.Server.Repositories;
 public class Repository<T> : IRepository<T> where T : class
 {
     protected readonly ApplicationDbContext _context;
-    private readonly DbSet<T> _dbSet;
+    protected readonly DbSet<T> _dbSet;
 
     public Repository(ApplicationDbContext context)
     {
@@ -22,6 +22,11 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<T> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<IEnumerable<T>> GetByIdsAsync(List<int> ids)
+    {
+        return await _dbSet.Where(e => ids.Contains(EF.Property<int>(e, "Id"))).ToListAsync();
     }
 
     public async Task<T> AddAsync(T entity)

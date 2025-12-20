@@ -3,13 +3,17 @@
 public class Club
 {
     public int Id { get; set; }
+    public string Slug { get; set; }
     public string Name { get; set; }
-    public string Logo { get; set; }
-    public string Bio { get; set; }
-    public string PaymentDetails { get; set; }
-    public List<Sponsor> Sponsors { get; set; } = new();
+    public string Description { get; set; }
+    public string Email { get; set; }
+    public string PrimaryColour { get; set; }
+    public string SecondaryColour { get; set; }
+    public string HeroImageId { get; set; }
+    public string Currency { get; set; }
+    public bool IsPublished { get; set; }
     public List<ClubAdmin> Admins { get; set; } = new();
-    public List<Team> Teams { get; set; } = new();
-    public string PlayerKey { get; set; } // Used to authenticate player detail links/forms
+    public List<Product> Products { get; set; } = new();
+    public List<Social> Socials { get; set; } = new();
 }
 

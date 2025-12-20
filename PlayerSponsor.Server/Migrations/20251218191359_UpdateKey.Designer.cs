@@ -12,8 +12,8 @@ using PlayerSponsor.Server.Data.Context;
 namespace PlayerSponsor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250329202445_FixClubAdminUserRelationship")]
-    partial class FixClubAdminUserRelationship
+    [Migration("20251218191359_UpdateKey")]
+    partial class UpdateKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -266,10 +266,16 @@ namespace PlayerSponsor.Server.Migrations
             modelBuilder.Entity("PlayerSponsor.Server.Models.ClubAdmin", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<int>("ClubId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -278,6 +284,8 @@ namespace PlayerSponsor.Server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ClubId");
 
                     b.HasIndex("UserId");
 
@@ -325,6 +333,37 @@ namespace PlayerSponsor.Server.Migrations
                     b.HasIndex("TeamId");
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("PlayerSponsor.Server.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IconWord")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("PriceUnit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("PlayerSponsor.Server.Models.Sponsor", b =>
@@ -503,7 +542,7 @@ namespace PlayerSponsor.Server.Migrations
 
                     b.HasOne("PlayerSponsor.Server.Models.Club", "Club")
                         .WithMany("Admins")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("ClubId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

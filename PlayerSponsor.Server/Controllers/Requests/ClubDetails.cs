@@ -12,5 +12,12 @@ public class ClubDetails
     public string Description { get; set; }
     [Required]
     [EmailAddress(ErrorMessage = "InteracEmail has to be a valid email")]
-    public string InteracEmail { get; set; }
+    public string Email { get; set; }
+    [Required]
+    public string Slug { get; set; }
+    [Required]
+    public string PrimaryColour { get; set; }
+    [Required]
+    public string SecondaryColour { get; set; }
+    public string HeroImageId { get; set; }
 }

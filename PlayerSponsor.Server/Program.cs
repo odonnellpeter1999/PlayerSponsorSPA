@@ -5,7 +5,7 @@ using PlayerSponsor.Server.Auth;
 using PlayerSponsor.Server.Data.Context;
 using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Repositories;
-using PlayerSponsor.Server.Services;
+using PlayerSponsor.Server.Services.AccountService;
 using PlayerSponsor.Server.Services.ClubService;
 using System.Text.Json;
 

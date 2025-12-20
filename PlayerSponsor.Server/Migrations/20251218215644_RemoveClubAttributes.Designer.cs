@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlayerSponsor.Server.Data.Context;
 
@@ -11,9 +12,11 @@ using PlayerSponsor.Server.Data.Context;
 namespace PlayerSponsor.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218215644_RemoveClubAttributes")]
+    partial class RemoveClubAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,23 +246,11 @@ namespace PlayerSponsor.Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("HeroImageId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PrimaryColour")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("SecondaryColour")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Slug")
+                    b.Property<string>("PaymentDetails")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -374,32 +365,6 @@ namespace PlayerSponsor.Server.Migrations
                     b.HasIndex("ClubId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("PlayerSponsor.Server.Models.Social", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ClubId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Platform")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClubId");
-
-                    b.ToTable("Social");
                 });
 
             modelBuilder.Entity("PlayerSponsor.Server.Models.Sponsor", b =>
@@ -609,13 +574,6 @@ namespace PlayerSponsor.Server.Migrations
                         .HasForeignKey("ClubId");
                 });
 
-            modelBuilder.Entity("PlayerSponsor.Server.Models.Social", b =>
-                {
-                    b.HasOne("PlayerSponsor.Server.Models.Club", null)
-                        .WithMany("Socials")
-                        .HasForeignKey("ClubId");
-                });
-
             modelBuilder.Entity("PlayerSponsor.Server.Models.Sponsor", b =>
                 {
                     b.HasOne("PlayerSponsor.Server.Models.Team", null)
@@ -647,8 +605,6 @@ namespace PlayerSponsor.Server.Migrations
                     b.Navigation("Admins");
 
                     b.Navigation("Products");
-
-                    b.Navigation("Socials");
                 });
 
             modelBuilder.Entity("PlayerSponsor.Server.Models.Sponsor", b =>

@@ -24,6 +24,7 @@ function RouteComponent() {
           Support {clubData.name}
         </Typography>
 
+        {/* Hero Image Section */}
         <HeroImageSection imageId={clubData.heroImageId} />
 
         {/* Sponsorship Products Section (3-column grid for desktop, 1-column for mobile) */}
@@ -47,7 +48,7 @@ function RouteComponent() {
 
         <Divider sx={{ my: 4 }} />
 
-        {/* --- Contact Form Section --- */}
+        {/* --- Contact Us Section --- */}
         <Box sx={{ bgcolor: 'white', borderRadius: 4, p: 3 }} >
           <ContactUsPanel email={clubData.email} socialLinks={clubData.socialMedia} />
         </Box>

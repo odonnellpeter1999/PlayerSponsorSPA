@@ -1,6 +1,6 @@
-﻿namespace PlayerSponsor.Server.Services.DTOs;
+﻿namespace PlayerSponsor.Server.Services.Commands;
 
-public class NewApplicationUser
+public class CreateUserCommand
 {
     public string Email { get; set; }
     public string Password { get; set; }

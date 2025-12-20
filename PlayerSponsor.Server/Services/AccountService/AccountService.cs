@@ -2,24 +2,22 @@
 using PlayerSponsor.Server.Common;
 using PlayerSponsor.Server.Models;
 using PlayerSponsor.Server.Services.ClubService;
-using PlayerSponsor.Server.Services.DTOs;
+using PlayerSponsor.Server.Services.Commands;
 
-namespace PlayerSponsor.Server.Services;
+namespace PlayerSponsor.Server.Services.AccountService;
 
 public class AccountService : IAccountService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IClubService _clubService;
 
-    public AccountService(UserManager<ApplicationUser> userManager, IClubService clubService, SignInManager<ApplicationUser> signInManager)
+    public AccountService(UserManager<ApplicationUser> userManager, IClubService clubService)
     {
         _userManager = userManager;
         _clubService = clubService;
-        _signInManager = signInManager;
     }
 
-    public async Task<ResultT<ApplicationUser>> RegisterUserAsync(NewApplicationUser newUser)
+    public async Task<ResultT<ApplicationUser>> RegisterUserAsync(CreateUserCommand newUser)
     {
         var user = new ApplicationUser
         {

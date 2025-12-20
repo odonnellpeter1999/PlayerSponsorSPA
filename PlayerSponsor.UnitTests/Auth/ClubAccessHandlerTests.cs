@@ -4,11 +4,12 @@ using Moq;
 using NUnit.Framework;
 using PlayerSponsor.Server.Auth;
 using PlayerSponsor.Server.Models;
+using PlayerSponsor.UnitTests.Common;
 using System.Security.Claims;
 
 namespace PlayerSponsor.UnitTests.Auth;
 
-internal class ClubAccessHandlerTests: AuthenticationTestBase
+internal class ClubAccessHandlerTests: TestBase
 {
     private ClubAccessHandler _sut;
     private Mock<IHttpContextAccessor> _httpContextAccessor;

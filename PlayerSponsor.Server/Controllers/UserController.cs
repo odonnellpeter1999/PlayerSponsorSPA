@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlayerSponsor.Server.Controllers.Requests;
 using PlayerSponsor.Server.Models;
-using PlayerSponsor.Server.Services;
-using PlayerSponsor.Server.Services.DTOs;
+using PlayerSponsor.Server.Services.AccountService;
+using PlayerSponsor.Server.Services.Commands;
 
 [Route("api/[controller]")]
 public class UserController : Controller
@@ -44,7 +44,7 @@ public class UserController : Controller
             }
         }
 
-        var registrationResult = await _accountService.RegisterUserAsync(new NewApplicationUser
+        var registrationResult = await _accountService.RegisterUserAsync(new CreateUserCommand
         {
             Email = request.Email,
             Password = request.Password,
